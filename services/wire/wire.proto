@@ -1,0 +1,7 @@
+package wire;
+
+message header {
+  optional string method = 1;
+  optional uint64 seq = 2;
+  optional string error = 3;
+}

@@ -1,0 +1,14 @@
+package svc;
+
+message Args {
+  required string a = 1;
+  required string b = 2;
+}
+
+message Return {
+  required string c = 1;
+}
+
+service ConcatService {
+  rpc Concat (Args) returns (Return);
+}

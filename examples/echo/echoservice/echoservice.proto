@@ -1,0 +1,9 @@
+package echoservice;
+
+message payload {
+  required string message = 1;
+}
+
+service echo_service {
+  rpc echo (payload) returns (payload);
+}
