@@ -53,17 +53,20 @@
 //   type EchoService interface {
 //       Echo(in *Payload, out *Payload) error
 //   }
+//
+//   // DialEchoService returns a EchoService for calling the EchoService servince at addr (TCP).
+//   func DialEchoService(addr string) (EchoService, error) {
 //   
 //   // NewEchoServiceClient returns an *rpc.Client wrapper for calling the methods of
 //   // EchoService remotely.
 //   func NewEchoServiceClient(conn net.Conn) EchoService
 //   
-//   // ServeEchoService serves the given EchoService backend implementation on conn.
-//   func ServeEchoService(conn net.Conn, backend EchoService) error
-//
 //   // ListenAndServeEchoService serves the given EchoService backend implementation
 //   // on all connections accepted as a result of listening on addr (TCP).
 //   func ListenAndServeEchoService(addr string, backend EchoService) error
+//
+//   // ServeEchoService serves the given EchoService backend implementation on conn.
+//   func ServeEchoService(conn net.Conn, backend EchoService) error
 //
 // Any type which implements EchoService can thus be registered via ServeEchoService
 // or ListenAndServeEchoService to be called remotely via NewEchoServiceClient.

@@ -6,12 +6,9 @@ package svc
 import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
-import (
-	"net"
-	"net/rpc"
-
-	"github.com/kylelemons/go-rpcgen/services"
-)
+import "net"
+import "net/rpc"
+import "github.com/kylelemons/go-rpcgen/services"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
@@ -66,6 +63,15 @@ func ServeConcatService(conn net.Conn, backend ConcatService) error {
 	}
 	srv.ServeCodec(services.NewServerCodec(conn))
 	return nil
+}
+
+// DialConcatService returns a ConcatService for calling the ConcatService servince at addr (TCP).
+func DialConcatService(addr string) (ConcatService, error) {
+	conn, err := net.Dial("tcp", addr)
+	if err != nil {
+		return nil, err
+	}
+	return NewConcatServiceClient(conn), nil
 }
 
 // ListenAndServeConcatService serves the given ConcatService backend implementation

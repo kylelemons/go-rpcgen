@@ -66,6 +66,15 @@ func ServeMath(conn net.Conn, backend Math) error {
 	return nil
 }
 
+// DialMath returns a Math for calling the Math servince at addr (TCP).
+func DialMath(addr string) (Math, error) {
+	conn, err := net.Dial("tcp", addr)
+	if err != nil {
+		return nil, err
+	}
+	return NewMathClient(conn), nil
+}
+
 // ListenAndServeMath serves the given Math backend implementation
 // on all connections accepted as a result of listening on addr (TCP).
 func ListenAndServeMath(addr string, backend Math) error {

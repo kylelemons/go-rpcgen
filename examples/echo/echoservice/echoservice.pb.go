@@ -6,12 +6,9 @@ package echoservice
 import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
-import (
-	"net"
-	"net/rpc"
-
-	"github.com/kylelemons/go-rpcgen/services"
-)
+import "net"
+import "net/rpc"
+import "github.com/kylelemons/go-rpcgen/services"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
@@ -57,6 +54,15 @@ func ServeEchoService(conn net.Conn, backend EchoService) error {
 	}
 	srv.ServeCodec(services.NewServerCodec(conn))
 	return nil
+}
+
+// DialEchoService returns a EchoService for calling the EchoService servince at addr (TCP).
+func DialEchoService(addr string) (EchoService, error) {
+	conn, err := net.Dial("tcp", addr)
+	if err != nil {
+		return nil, err
+	}
+	return NewEchoServiceClient(conn), nil
 }
 
 // ListenAndServeEchoService serves the given EchoService backend implementation

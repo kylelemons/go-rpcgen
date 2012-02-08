@@ -52,14 +52,9 @@ func (p *Plugin) GenerateImports(file *generator.FileDescriptor) {
 	if !p.imports {
 		return
 	}
-	p.P("import (")
-	p.In()
-	p.P(`"net"`)
-	p.P(`"net/rpc"`)
-	p.P()
-	p.P(`"github.com/kylelemons/go-rpcgen/services"`)
-	p.Out()
-	p.P(")")
+	p.P(`import "net"`)
+	p.P(`import "net/rpc"`)
+	p.P(`import "github.com/kylelemons/go-rpcgen/services"`)
 }
 
 func init() {
