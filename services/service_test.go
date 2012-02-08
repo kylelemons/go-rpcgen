@@ -63,6 +63,28 @@ func ServeMath(conn net.Conn, backend Math) error {
 		return err
 	}
 	srv.ServeCodec(services.NewServerCodec(conn))
+	return nil
+}
+
+// ListenAndServeMath serves the given Math backend implementation
+// on all connections accepted as a result of listening on addr (TCP).
+func ListenAndServeMath(addr string, backend Math) error {
+	clients, err := net.Listen("tcp", addr)
+	if err != nil {
+		return err
+	}
+	srv := rpc.NewServer()
+	if err := srv.RegisterName("Math", backend); err != nil {
+		return err
+	}
+	srv.ServeCodec(services.NewServerCodec(conn))
+	for {
+		conn, err := clients.Accept()
+		if err != nil {
+			return err
+		}
+		go srv.ServeCodec(services.NewServerCodec(conn))
+	}
 	panic("unreachable")
 }
 `,

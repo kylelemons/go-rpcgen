@@ -6,13 +6,6 @@ package echoservice
 import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
-import (
-	"net"
-	"net/rpc"
-
-	"github.com/kylelemons/go-rpcgen/services"
-)
-
 // Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
@@ -26,35 +19,4 @@ func (this *Payload) Reset()         { *this = Payload{} }
 func (this *Payload) String() string { return proto.CompactTextString(this) }
 
 func init() {
-}
-
-// EchoService is an interface satisfied by the generated client and
-// which must be implemented by the object wrapped by the server.
-type EchoService interface {
-	Echo(in *Payload, out *Payload) error
-}
-
-// internal wrapper for type-safe RPC calling
-type rpcEchoServiceClient struct {
-	*rpc.Client
-}
-
-func (this rpcEchoServiceClient) Echo(in *Payload, out *Payload) error {
-	return this.Call("EchoService.Echo", in, out)
-}
-
-// NewEchoServiceClient returns an *rpc.Client wrapper for calling the methods of
-// EchoService remotely.
-func NewEchoServiceClient(conn net.Conn) EchoService {
-	return rpcEchoServiceClient{rpc.NewClientWithCodec(services.NewClientCodec(conn))}
-}
-
-// ServeEchoService serves the given EchoService backend implementation on conn.
-func ServeEchoService(conn net.Conn, backend EchoService) error {
-	srv := rpc.NewServer()
-	if err := srv.RegisterName("EchoService", backend); err != nil {
-		return err
-	}
-	srv.ServeCodec(services.NewServerCodec(conn))
-	panic("unreachable")
 }

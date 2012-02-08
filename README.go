@@ -34,6 +34,40 @@
 // them with the RPC package.  As mentioned above, the "go fix" is necessary to
 // fix the imports in the generated .pb.go file.
 //
-// See the examples/ subdirectory for some simple examples demonstrating basic
-// usage.
+// Examples
+//
+// Given the following basic .proto definition:
+//  
+//   package echoservice;
+//   message payload {
+//       required string message = 1;
+//   }
+//   service echo_service {
+//       rpc echo (payload) returns (payload);
+//   }
+//
+// The protoc-gen-go plugin will generate a service definition similar to below:
+//   
+//   // EchoService is an interface satisfied by the generated client and
+//   // which must be implemented by the object wrapped by the server.
+//   type EchoService interface {
+//       Echo(in *Payload, out *Payload) error
+//   }
+//   
+//   // NewEchoServiceClient returns an *rpc.Client wrapper for calling the methods of
+//   // EchoService remotely.
+//   func NewEchoServiceClient(conn net.Conn) EchoService
+//   
+//   // ServeEchoService serves the given EchoService backend implementation on conn.
+//   func ServeEchoService(conn net.Conn, backend EchoService) error
+//
+//   // ListenAndServeEchoService serves the given EchoService backend implementation
+//   // on all connections accepted as a result of listening on addr (TCP).
+//   func ListenAndServeEchoService(addr string, backend EchoService) error
+//
+// Any type which implements EchoService can thus be registered via ServeEchoService
+// or ListenAndServeEchoService to be called remotely via NewEchoServiceClient.
+//
+// See the examples/ subdirectory for some complete examples demonstrating
+// basic usage.
 package documentation
