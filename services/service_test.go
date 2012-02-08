@@ -11,7 +11,7 @@ import (
 )
 
 func TestGenerateService(t *testing.T) {
-	cases := []struct{
+	cases := []struct {
 		Service *descriptor.ServiceDescriptorProto
 		Output  string
 	}{
@@ -20,13 +20,13 @@ func TestGenerateService(t *testing.T) {
 				Name: proto.String("math"),
 				Method: []*descriptor.MethodDescriptorProto{
 					{
-						Name: proto.String("Sqrt"),
-						InputType: proto.String("SqrtInput"),
+						Name:       proto.String("Sqrt"),
+						InputType:  proto.String("SqrtInput"),
 						OutputType: proto.String("SqrtOutput"),
 					},
 					{
-						Name: proto.String("Add"),
-						InputType: proto.String("AddInput"),
+						Name:       proto.String("Add"),
+						InputType:  proto.String("AddInput"),
 						OutputType: proto.String("AddOutput"),
 					},
 				},
@@ -105,10 +105,12 @@ func ListenAndServeMath(addr string, backend Math) error {
 }
 
 type fakeObject string
-func (fakeObject) PackageName() string { return "" }
-func (fakeObject) TypeName() []string { return nil }
+
+func (fakeObject) PackageName() string                   { return "" }
+func (fakeObject) TypeName() []string                    { return nil }
 func (fakeObject) File() *descriptor.FileDescriptorProto { return nil }
 
-type fakeCompileGen struct { *generator.Generator }
+type fakeCompileGen struct{ *generator.Generator }
+
 func (fakeCompileGen) ObjectNamed(name string) generator.Object { return fakeObject(name) }
-func (fakeCompileGen) TypeName(obj generator.Object) string { return string(obj.(fakeObject)) }
+func (fakeCompileGen) TypeName(obj generator.Object) string     { return string(obj.(fakeObject)) }

@@ -9,11 +9,12 @@ import (
 )
 
 var (
-	addr = flag.String("addr", ":9999", "RPC Server address (transient)")
+	addr    = flag.String("addr", ":9999", "RPC Server address (transient)")
 	message = flag.String("message", "test", "Test echo message")
 )
 
-type Echo struct {}
+type Echo struct{}
+
 func (Echo) Echo(in *echoservice.Payload, out *echoservice.Payload) error {
 	out.Message = in.Message
 	return nil

@@ -19,7 +19,7 @@ type compileGen interface {
 
 // Plugin implements the generator.Plugin interface
 type Plugin struct {
-	imports    bool
+	imports bool
 	compileGen
 }
 
