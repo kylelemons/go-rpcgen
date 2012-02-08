@@ -11,15 +11,21 @@
 // protoc from that package, you will need to have your $GOPATH/bin in your
 // path when you run protoc.
 //
+// You will also need the goprotobuf package, which would normally be installed
+// automatically by the go tool but it needs some help currently.  For some
+// reason, the usual "go get --fix" doesn't quite do enough, so it must be done
+// in two steps:
+//   go get -v -u -d code.google.com/p/goprotobuf/compiler
+//   go fix code.google.com/p/goprotobuf/...
+//
 // Installation
 //
 // To install, run the following command:
-//   go get -v -u --fix github.com/kylelemons/go-rpcgen/protoc-gen-go
+//   go get -v -u github.com/kylelemons/go-rpcgen/protoc-gen-go
 //
-// The --fix option is (as of 2012-02-07) required to fix the imports of the
-// goprotobuf source to use the new googlecode layout.  You will need to run
-// "go fix" on the output of this package before the .pb.go will compile under
-// the go tool.
+// Because (as mentioned above) goprotobuf hasn't been fully updated to Go 1
+// yet, You will need to run "go fix" on the output of this package before the
+// .pb.go will compile under the go tool.
 //
 // Usage
 //
