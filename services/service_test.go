@@ -77,7 +77,6 @@ func ListenAndServeMath(addr string, backend Math) error {
 	if err := srv.RegisterName("Math", backend); err != nil {
 		return err
 	}
-	srv.ServeCodec(services.NewServerCodec(conn))
 	for {
 		conn, err := clients.Accept()
 		if err != nil {

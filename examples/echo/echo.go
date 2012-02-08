@@ -22,17 +22,7 @@ func (Echo) Echo(in *echoservice.Payload, out *echoservice.Payload) error {
 func main() {
 	flag.Parse()
 
-	listener, err := net.Listen("tcp", *addr)
-	if err != nil {
-		log.Fatalf("listen: %s", err)
-	}
-	go func() {
-		conn, err := listener.Accept()
-		if err != nil {
-			log.Fatalf("accept: %s")
-		}
-		echoservice.ServeEchoService(conn, Echo{})
-	}()
+	go echoservice.ListenAndServeEchoService(*addr, Echo{})
 
 	conn, err := net.Dial("tcp", *addr)
 	if err != nil {

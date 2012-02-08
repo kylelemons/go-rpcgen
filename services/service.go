@@ -90,7 +90,6 @@ func (p *Plugin) GenerateService(svc *descriptor.ServiceDescriptorProto) {
 	p.P("return err")
 	p.Out()
 	p.P("}")
-	p.P("srv.ServeCodec(services.NewServerCodec(conn))")
 	p.P("for {")
 	p.In()
 	p.P("conn, err := clients.Accept()")

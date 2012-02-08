@@ -6,6 +6,13 @@ package svc
 import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
+import (
+	"net"
+	"net/rpc"
+
+	"github.com/kylelemons/go-rpcgen/services"
+)
+
 // Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
@@ -28,4 +35,56 @@ func (this *Return) Reset()         { *this = Return{} }
 func (this *Return) String() string { return proto.CompactTextString(this) }
 
 func init() {
+}
+
+// ConcatService is an interface satisfied by the generated client and
+// which must be implemented by the object wrapped by the server.
+type ConcatService interface {
+	Concat(in *Args, out *Return) error
+}
+
+// internal wrapper for type-safe RPC calling
+type rpcConcatServiceClient struct {
+	*rpc.Client
+}
+
+func (this rpcConcatServiceClient) Concat(in *Args, out *Return) error {
+	return this.Call("ConcatService.Concat", in, out)
+}
+
+// NewConcatServiceClient returns an *rpc.Client wrapper for calling the methods of
+// ConcatService remotely.
+func NewConcatServiceClient(conn net.Conn) ConcatService {
+	return rpcConcatServiceClient{rpc.NewClientWithCodec(services.NewClientCodec(conn))}
+}
+
+// ServeConcatService serves the given ConcatService backend implementation on conn.
+func ServeConcatService(conn net.Conn, backend ConcatService) error {
+	srv := rpc.NewServer()
+	if err := srv.RegisterName("ConcatService", backend); err != nil {
+		return err
+	}
+	srv.ServeCodec(services.NewServerCodec(conn))
+	return nil
+}
+
+// ListenAndServeConcatService serves the given ConcatService backend implementation
+// on all connections accepted as a result of listening on addr (TCP).
+func ListenAndServeConcatService(addr string, backend ConcatService) error {
+	clients, err := net.Listen("tcp", addr)
+	if err != nil {
+		return err
+	}
+	srv := rpc.NewServer()
+	if err := srv.RegisterName("ConcatService", backend); err != nil {
+		return err
+	}
+	for {
+		conn, err := clients.Accept()
+		if err != nil {
+			return err
+		}
+		go srv.ServeCodec(services.NewServerCodec(conn))
+	}
+	panic("unreachable")
 }
