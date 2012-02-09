@@ -17,7 +17,7 @@ echo "Building protoc-gen-go..."
 go build -o protoc-gen-go/protoc-gen-go $REPO/protoc-gen-go
 export PATH="protoc-gen-go/:$PATH"
 
-for PROTO in $(find . -name "*.proto"); do
+for PROTO in $(find . -name "*.proto" | grep -v "option.proto"); do
   echo "Compiling ${PROTO}..."
   protoc --go_out=. ${PROTO}
   go fix $(dirname "${PROTO}")

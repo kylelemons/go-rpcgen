@@ -9,6 +9,9 @@ import "math"
 import "net"
 import "net/rpc"
 import "github.com/kylelemons/go-rpcgen/codec"
+import "net/url"
+import "net/http"
+import "github.com/kylelemons/go-rpcgen/webrpc"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
@@ -93,4 +96,46 @@ func ListenAndServeConcatService(addr string, backend ConcatService) error {
 		go srv.ServeCodec(plugin.NewServerCodec(conn))
 	}
 	panic("unreachable")
+}
+
+// ConcatServiceWeb is the web-based RPC version of the interface which
+// must be implemented by the object wrapped by the webrpc server.
+type ConcatServiceWeb interface {
+	Concat(r *http.Request, in *Args, out *Return) error
+}
+
+// internal wrapper for type-safe webrpc calling
+type rpcConcatServiceWebClient struct {
+	remote *url.URL
+}
+
+func (this rpcConcatServiceWebClient) Concat(in *Args, out *Return) error {
+	return webrpc.Post(this.remote, "/ConcatService/Concat", in, out)
+}
+
+// Register a ConcatServiceWeb implementation with the given webrpc ServeMux.
+// If mux is nil, the default webrpc.ServeMux is used.
+func RegisterConcatServiceWeb(this ConcatServiceWeb, mux webrpc.ServeMux) error {
+	if mux == nil {
+		mux = webrpc.DefaultServeMux
+	}
+	if err := mux.Handle("/ConcatService/Concat", func(c *webrpc.Call) error {
+		in, out := new(Args), new(Return)
+		if err := c.ReadProto(in); err != nil {
+			return err
+		}
+		if err := this.Concat(c.Request, in, out); err != nil {
+			return err
+		}
+		return c.WriteProto(out)
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewConcatServiceWebClient returns a webrpc wrapper for calling the methods of ConcatService
+// remotely via the web.  The remote URL is the base URL of the webrpc server.
+func NewConcatServiceWebClient(remote *url.URL) ConcatService {
+	return rpcConcatServiceWebClient{remote}
 }

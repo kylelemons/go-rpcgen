@@ -47,7 +47,7 @@ func (p *Plugin) Init(g *generator.Generator) {
 // Generate generates the RPC stubs for all plugin in the given
 // FileDescriptorProto.
 func (p *Plugin) Generate(file *generator.FileDescriptor) {
-	rpcStubs, webStubs := true, false
+	rpcStubs, webStubs := true, true
 
 	if options := file.FileDescriptorProto.Options; options != nil {
 		for _, option := range options.UninterpretedOption {
@@ -88,6 +88,11 @@ func (p *Plugin) GenerateImports(file *generator.FileDescriptor) {
 		p.P(`import "net"`)
 		p.P(`import "net/rpc"`)
 		p.P(`import "github.com/kylelemons/go-rpcgen/codec"`)
+	}
+	if p.webImports {
+		p.P(`import "net/url"`)
+		p.P(`import "net/http"`)
+		p.P(`import "github.com/kylelemons/go-rpcgen/webrpc"`)
 	}
 }
 

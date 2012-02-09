@@ -1,0 +1,17 @@
+package offload;
+
+// This may not be possible, but I'd like to add it eventually.
+//option go_rpc_stubs = "false";
+//option go_web_stubs = 1;
+
+message data_set {
+  repeated bytes data = 1;
+}
+
+message result_set {
+  repeated bytes result = 1;
+}
+
+service offload_service {
+  rpc compute (data_set) returns (result_set);
+}

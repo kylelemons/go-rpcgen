@@ -9,6 +9,9 @@ import "math"
 import "net"
 import "net/rpc"
 import "github.com/kylelemons/go-rpcgen/codec"
+import "net/url"
+import "net/http"
+import "github.com/kylelemons/go-rpcgen/webrpc"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
@@ -84,4 +87,46 @@ func ListenAndServeEchoService(addr string, backend EchoService) error {
 		go srv.ServeCodec(plugin.NewServerCodec(conn))
 	}
 	panic("unreachable")
+}
+
+// EchoServiceWeb is the web-based RPC version of the interface which
+// must be implemented by the object wrapped by the webrpc server.
+type EchoServiceWeb interface {
+	Echo(r *http.Request, in *Payload, out *Payload) error
+}
+
+// internal wrapper for type-safe webrpc calling
+type rpcEchoServiceWebClient struct {
+	remote *url.URL
+}
+
+func (this rpcEchoServiceWebClient) Echo(in *Payload, out *Payload) error {
+	return webrpc.Post(this.remote, "/EchoService/Echo", in, out)
+}
+
+// Register a EchoServiceWeb implementation with the given webrpc ServeMux.
+// If mux is nil, the default webrpc.ServeMux is used.
+func RegisterEchoServiceWeb(this EchoServiceWeb, mux webrpc.ServeMux) error {
+	if mux == nil {
+		mux = webrpc.DefaultServeMux
+	}
+	if err := mux.Handle("/EchoService/Echo", func(c *webrpc.Call) error {
+		in, out := new(Payload), new(Payload)
+		if err := c.ReadProto(in); err != nil {
+			return err
+		}
+		if err := this.Echo(c.Request, in, out); err != nil {
+			return err
+		}
+		return c.WriteProto(out)
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewEchoServiceWebClient returns a webrpc wrapper for calling the methods of EchoService
+// remotely via the web.  The remote URL is the base URL of the webrpc server.
+func NewEchoServiceWebClient(remote *url.URL) EchoService {
+	return rpcEchoServiceWebClient{remote}
 }

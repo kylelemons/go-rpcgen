@@ -7,11 +7,10 @@ import (
 
 // TODO: Use io.ReadWriteCloser instead of net.Conn?
 
-// GenerateRPCStubs is the core of the plugin package.
-// It generates an interface based on the ServiceDescriptorProto and an RPC
-// client implementation of the interface as well as three helper functions
-// to create the Client and Server necessary to utilize the service over
-// RPC.
+// GenerateRPCStubs generates the net/rpc-based stubs.
+// It generates  an RPC client implementation of the interface as well as three
+// helper functions to create the Client and Server necessary to utilize the
+// service over RPC.
 func (p *Plugin) GenerateRPCStubs(svc *descriptor.ServiceDescriptorProto) {
 	p.rpcImports = true
 
