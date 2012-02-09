@@ -106,11 +106,12 @@ type ConcatServiceWeb interface {
 
 // internal wrapper for type-safe webrpc calling
 type rpcConcatServiceWebClient struct {
-	remote *url.URL
+	remote   *url.URL
+	protocol webrpc.Protocol
 }
 
 func (this rpcConcatServiceWebClient) Concat(in *Args, out *Return) error {
-	return webrpc.Post(this.remote, "/ConcatService/Concat", in, out)
+	return webrpc.Post(this.protocol, this.remote, "/ConcatService/Concat", in, out)
 }
 
 // Register a ConcatServiceWeb implementation with the given webrpc ServeMux.
@@ -121,13 +122,13 @@ func RegisterConcatServiceWeb(this ConcatServiceWeb, mux webrpc.ServeMux) error 
 	}
 	if err := mux.Handle("/ConcatService/Concat", func(c *webrpc.Call) error {
 		in, out := new(Args), new(Return)
-		if err := c.ReadProto(in); err != nil {
+		if err := c.ReadRequest(in); err != nil {
 			return err
 		}
 		if err := this.Concat(c.Request, in, out); err != nil {
 			return err
 		}
-		return c.WriteProto(out)
+		return c.WriteResponse(out)
 	}); err != nil {
 		return err
 	}
@@ -136,6 +137,6 @@ func RegisterConcatServiceWeb(this ConcatServiceWeb, mux webrpc.ServeMux) error 
 
 // NewConcatServiceWebClient returns a webrpc wrapper for calling the methods of ConcatService
 // remotely via the web.  The remote URL is the base URL of the webrpc server.
-func NewConcatServiceWebClient(remote *url.URL) ConcatService {
-	return rpcConcatServiceWebClient{remote}
+func NewConcatServiceWebClient(pro webrpc.Protocol, remote *url.URL) ConcatService {
+	return rpcConcatServiceWebClient{remote, pro}
 }

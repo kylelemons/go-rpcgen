@@ -40,7 +40,7 @@
 // them with the RPC package.  As mentioned above, the "go fix" is necessary to
 // fix the imports in the generated .pb.go file.
 //
-// Examples
+// Example - net/rpc
 //
 // Given the following basic .proto definition:
 //  
@@ -76,6 +76,32 @@
 //
 // Any type which implements EchoService can thus be registered via ServeEchoService
 // or ListenAndServeEchoService to be called remotely via NewEchoServiceClient.
+//
+// Example - webrpc
+//
+// In addition to the above, the following are also generated to facilitate
+// serving RPCs over the web (e.g. AppEngine):
+//   
+//   // EchoServiceWeb is the web-based RPC version of the interface which
+//   // must be implemented by the object wrapped by the webrpc server.
+//   type EchoServiceWeb interface {
+//     Echo(r *http.Request, in *Payload, out *Payload) error
+//   }
+//   
+//   // NewEchoServiceWebClient returns a webrpc wrapper for calling the methods of EchoService
+//   // remotely via the web.  The remote URL is the base URL of the webrpc server.
+//   func NewEchoServiceWebClient(remote *url.URL, pro webrpc.Protocol) EchoService
+//
+//   // Register a EchoServiceWeb implementation with the given webrpc ServeMux.
+//   // If mux is nil, the default webrpc.ServeMux is used.
+//   func RegisterEchoServiceWeb(this EchoServiceWeb, mux webrpc.ServeMux) error
+//
+// Any type which implements EchoServiceWeb (notice that the handlers also
+// receive the *http.Request) can be registered.  The RegisterEchoServiceWeb
+// function registers the given backend implementation to be called from the
+// web via the webrpc package.
+//
+// Examples - other
 //
 // See the examples/ subdirectory for some complete examples demonstrating
 // basic usage.

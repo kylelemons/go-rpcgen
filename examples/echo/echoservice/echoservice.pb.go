@@ -97,11 +97,12 @@ type EchoServiceWeb interface {
 
 // internal wrapper for type-safe webrpc calling
 type rpcEchoServiceWebClient struct {
-	remote *url.URL
+	remote   *url.URL
+	protocol webrpc.Protocol
 }
 
 func (this rpcEchoServiceWebClient) Echo(in *Payload, out *Payload) error {
-	return webrpc.Post(this.remote, "/EchoService/Echo", in, out)
+	return webrpc.Post(this.protocol, this.remote, "/EchoService/Echo", in, out)
 }
 
 // Register a EchoServiceWeb implementation with the given webrpc ServeMux.
@@ -112,13 +113,13 @@ func RegisterEchoServiceWeb(this EchoServiceWeb, mux webrpc.ServeMux) error {
 	}
 	if err := mux.Handle("/EchoService/Echo", func(c *webrpc.Call) error {
 		in, out := new(Payload), new(Payload)
-		if err := c.ReadProto(in); err != nil {
+		if err := c.ReadRequest(in); err != nil {
 			return err
 		}
 		if err := this.Echo(c.Request, in, out); err != nil {
 			return err
 		}
-		return c.WriteProto(out)
+		return c.WriteResponse(out)
 	}); err != nil {
 		return err
 	}
@@ -127,6 +128,6 @@ func RegisterEchoServiceWeb(this EchoServiceWeb, mux webrpc.ServeMux) error {
 
 // NewEchoServiceWebClient returns a webrpc wrapper for calling the methods of EchoService
 // remotely via the web.  The remote URL is the base URL of the webrpc server.
-func NewEchoServiceWebClient(remote *url.URL) EchoService {
-	return rpcEchoServiceWebClient{remote}
+func NewEchoServiceWebClient(pro webrpc.Protocol, remote *url.URL) EchoService {
+	return rpcEchoServiceWebClient{remote, pro}
 }

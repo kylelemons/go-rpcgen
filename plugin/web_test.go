@@ -41,15 +41,16 @@ type MathWeb interface {
 
 // internal wrapper for type-safe webrpc calling
 type rpcMathWebClient struct {
-	remote *url.URL
+	remote   *url.URL
+	protocol webrpc.Protocol
 }
 
 func (this rpcMathWebClient) Sqrt(in *SqrtInput, out *SqrtOutput) error {
-	return webrpc.Post(this.remote, "/Math/Sqrt", in, out)
+	return webrpc.Post(this.protocol, this.remote, "/Math/Sqrt", in, out)
 }
 
 func (this rpcMathWebClient) Add(in *AddInput, out *AddOutput) error {
-	return webrpc.Post(this.remote, "/Math/Add", in, out)
+	return webrpc.Post(this.protocol, this.remote, "/Math/Add", in, out)
 }
 
 // Register a MathWeb implementation with the given webrpc ServeMux.
@@ -60,25 +61,25 @@ func RegisterMathWeb(this MathWeb, mux webrpc.ServeMux) error {
 	}
 	if err := mux.Handle("/Math/Sqrt", func(c *webrpc.Call) error {
 		in, out := new(SqrtInput), new(SqrtOutput)
-		if err := c.ReadProto(in); err != nil {
+		if err := c.ReadRequest(in); err != nil {
 			return err
 		}
 		if err := this.Sqrt(c.Request, in, out); err != nil {
 			return err
 		}
-		return c.WriteProto(out)
+		return c.WriteResponse(out)
 	}); err != nil {
 		return err
 	}
 	if err := mux.Handle("/Math/Add", func(c *webrpc.Call) error {
 		in, out := new(AddInput), new(AddOutput)
-		if err := c.ReadProto(in); err != nil {
+		if err := c.ReadRequest(in); err != nil {
 			return err
 		}
 		if err := this.Add(c.Request, in, out); err != nil {
 			return err
 		}
-		return c.WriteProto(out)
+		return c.WriteResponse(out)
 	}); err != nil {
 		return err
 	}
@@ -87,8 +88,8 @@ func RegisterMathWeb(this MathWeb, mux webrpc.ServeMux) error {
 
 // NewMathWebClient returns a webrpc wrapper for calling the methods of Math
 // remotely via the web.  The remote URL is the base URL of the webrpc server.
-func NewMathWebClient(remote *url.URL) Math {
-	return rpcMathWebClient{remote}
+func NewMathWebClient(pro webrpc.Protocol, remote *url.URL) Math {
+	return rpcMathWebClient{remote, pro}
 }
 `,
 		},

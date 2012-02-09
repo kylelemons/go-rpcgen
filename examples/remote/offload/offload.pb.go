@@ -18,16 +18,16 @@ var _ = proto.GetString
 var _ = math.Inf
 
 type DataSet struct {
-	Data             [][]byte `protobuf:"bytes,1,rep,name=data" json:"data,omitempty"`
-	XXX_unrecognized []byte   `json:",omitempty"`
+	Data             *string `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
+	XXX_unrecognized []byte  `json:",omitempty"`
 }
 
 func (this *DataSet) Reset()         { *this = DataSet{} }
 func (this *DataSet) String() string { return proto.CompactTextString(this) }
 
 type ResultSet struct {
-	Result           [][]byte `protobuf:"bytes,1,rep,name=result" json:"result,omitempty"`
-	XXX_unrecognized []byte   `json:",omitempty"`
+	Result           *string `protobuf:"bytes,1,opt,name=result" json:"result,omitempty"`
+	XXX_unrecognized []byte  `json:",omitempty"`
 }
 
 func (this *ResultSet) Reset()         { *this = ResultSet{} }
@@ -105,11 +105,12 @@ type OffloadServiceWeb interface {
 
 // internal wrapper for type-safe webrpc calling
 type rpcOffloadServiceWebClient struct {
-	remote *url.URL
+	remote   *url.URL
+	protocol webrpc.Protocol
 }
 
 func (this rpcOffloadServiceWebClient) Compute(in *DataSet, out *ResultSet) error {
-	return webrpc.Post(this.remote, "/OffloadService/Compute", in, out)
+	return webrpc.Post(this.protocol, this.remote, "/OffloadService/Compute", in, out)
 }
 
 // Register a OffloadServiceWeb implementation with the given webrpc ServeMux.
@@ -120,13 +121,13 @@ func RegisterOffloadServiceWeb(this OffloadServiceWeb, mux webrpc.ServeMux) erro
 	}
 	if err := mux.Handle("/OffloadService/Compute", func(c *webrpc.Call) error {
 		in, out := new(DataSet), new(ResultSet)
-		if err := c.ReadProto(in); err != nil {
+		if err := c.ReadRequest(in); err != nil {
 			return err
 		}
 		if err := this.Compute(c.Request, in, out); err != nil {
 			return err
 		}
-		return c.WriteProto(out)
+		return c.WriteResponse(out)
 	}); err != nil {
 		return err
 	}
@@ -135,6 +136,6 @@ func RegisterOffloadServiceWeb(this OffloadServiceWeb, mux webrpc.ServeMux) erro
 
 // NewOffloadServiceWebClient returns a webrpc wrapper for calling the methods of OffloadService
 // remotely via the web.  The remote URL is the base URL of the webrpc server.
-func NewOffloadServiceWebClient(remote *url.URL) OffloadService {
-	return rpcOffloadServiceWebClient{remote}
+func NewOffloadServiceWebClient(pro webrpc.Protocol, remote *url.URL) OffloadService {
+	return rpcOffloadServiceWebClient{remote, pro}
 }

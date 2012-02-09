@@ -5,11 +5,11 @@ package offload;
 //option go_web_stubs = 1;
 
 message data_set {
-  repeated bytes data = 1;
+  optional string data = 1;
 }
 
 message result_set {
-  repeated bytes result = 1;
+  optional string result = 1;
 }
 
 service offload_service {
