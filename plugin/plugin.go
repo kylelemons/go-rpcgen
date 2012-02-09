@@ -6,6 +6,8 @@
 package services
 
 import (
+	"strconv"
+
 	"code.google.com/p/goprotobuf/compiler/generator"
 )
 
@@ -18,6 +20,9 @@ type compileGen interface {
 	In()
 	Out()
 
+	// Errors
+	Error(error, ...string)
+
 	// Object lookup
 	ObjectNamed(string) generator.Object
 	TypeName(generator.Object) string
@@ -25,7 +30,8 @@ type compileGen interface {
 
 // Plugin implements the generator.Plugin interface.
 type Plugin struct {
-	imports bool
+	rpcImports bool
+	webImports bool
 	compileGen
 }
 
@@ -41,20 +47,48 @@ func (p *Plugin) Init(g *generator.Generator) {
 // Generate generates the RPC stubs for all services in the given
 // FileDescriptorProto.
 func (p *Plugin) Generate(file *generator.FileDescriptor) {
-	for _, svc := range file.Service {
-		p.GenerateService(svc)
+	rpcStubs, webStubs := true, false
+
+	if options := file.FileDescriptorProto.Options; options != nil {
+		for _, option := range options.UninterpretedOption {
+			if len(option.Name) != 1 || option.Name[0].NamePart == nil {
+				continue
+			}
+			var err error
+			name := *option.Name[0].NamePart
+			switch name {
+			case "go_rpc_stubs":
+				rpcStubs, err = strconv.ParseBool(string(option.StringValue))
+			case "go_web_stubs":
+				webStubs, err = strconv.ParseBool(string(option.StringValue))
+			}
+			if err != nil {
+				p.Error(err, "Could not parse value of " + name)
+			}
+		}
+	}
+
+	if rpcStubs {
+		for _, svc := range file.Service {
+			p.GenerateRPCStubs(svc)
+		}
+	}
+
+	if webStubs {
+		for _, svc := range file.Service {
+			p.GenerateWebStubs(svc)
+		}
 	}
 }
 
 // GenerateImports adds the required imports to the output file if the Generate
 // function generated any RPC stubs.
 func (p *Plugin) GenerateImports(file *generator.FileDescriptor) {
-	if !p.imports {
-		return
+	if p.rpcImports {
+		p.P(`import "net"`)
+		p.P(`import "net/rpc"`)
+		p.P(`import "github.com/kylelemons/go-rpcgen/codec"`)
 	}
-	p.P(`import "net"`)
-	p.P(`import "net/rpc"`)
-	p.P(`import "github.com/kylelemons/go-rpcgen/codec"`)
 }
 
 func init() {

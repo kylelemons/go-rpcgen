@@ -10,7 +10,7 @@ import (
 	"code.google.com/p/goprotobuf/proto"
 )
 
-func TestGenerateService(t *testing.T) {
+func TestGenerateRPCStubs(t *testing.T) {
 	cases := []struct {
 		Service *descriptor.ServiceDescriptorProto
 		Output  string
@@ -102,10 +102,10 @@ func ListenAndServeMath(addr string, backend Math) error {
 	for _, c := range cases {
 		buf := new(bytes.Buffer)
 		p := Plugin{compileGen: fakeCompileGen{&generator.Generator{Buffer: buf}}}
-		p.GenerateService(c.Service)
+		p.GenerateRPCStubs(c.Service)
 		if got, want := buf.String(), strings.TrimSpace(c.Output)+"\n"; got != want {
 			t.Fail()
-			t.Logf("GenerateService")
+			t.Logf("GenerateRPCStubs")
 			t.Logf("  Input: %s", c.Service)
 			t.Logf("  Got:\n%s", got)
 			t.Logf("  Want:\n%s", want)
