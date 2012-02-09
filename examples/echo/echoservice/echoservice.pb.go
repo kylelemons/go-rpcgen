@@ -8,7 +8,7 @@ import "math"
 
 import "net"
 import "net/rpc"
-import "github.com/kylelemons/go-rpcgen/services"
+import "github.com/kylelemons/go-rpcgen/codec"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString

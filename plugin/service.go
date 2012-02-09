@@ -12,7 +12,8 @@ import (
 	"code.google.com/p/goprotobuf/compiler/generator"
 	"code.google.com/p/goprotobuf/proto"
 
-	"github.com/kylelemons/go-rpcgen/services/wire"
+	_ "github.com/kylelemons/go-rpcgen/codec"
+	"github.com/kylelemons/go-rpcgen/plugin/wire"
 )
 
 // TODO: Use io.ReadWriteCloser instead of net.Conn?

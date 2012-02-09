@@ -50,7 +50,7 @@ import (
 	"code.google.com/p/goprotobuf/compiler/generator"
 	"code.google.com/p/goprotobuf/proto"
 
-	_ "github.com/kylelemons/go-rpcgen/services"
+	_ "github.com/kylelemons/go-rpcgen/plugin"
 )
 
 func main() {

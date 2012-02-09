@@ -2,7 +2,7 @@
 // RPC stubs for use with the the net/rpc package.
 //
 // To register the plugin, import this package as follows:
-//   import _ "github.com/kylelemons/go-rpcgen/services"
+//   import _ "github.com/kylelemons/go-rpcgen/codec"
 package services
 
 import (
@@ -54,7 +54,7 @@ func (p *Plugin) GenerateImports(file *generator.FileDescriptor) {
 	}
 	p.P(`import "net"`)
 	p.P(`import "net/rpc"`)
-	p.P(`import "github.com/kylelemons/go-rpcgen/services"`)
+	p.P(`import "github.com/kylelemons/go-rpcgen/codec"`)
 }
 
 func init() {
