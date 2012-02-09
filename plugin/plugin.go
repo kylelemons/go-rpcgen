@@ -1,9 +1,9 @@
-// Package services implements a plugin for protoc-gen-go that generates
+// Package plugin implements a plugin for protoc-gen-go that generates
 // RPC stubs for use with the the net/rpc package.
 //
 // To register the plugin, import this package as follows:
 //   import _ "github.com/kylelemons/go-rpcgen/codec"
-package services
+package plugin
 
 import (
 	"strconv"
@@ -44,7 +44,7 @@ func (p *Plugin) Init(g *generator.Generator) {
 	p.compileGen = g
 }
 
-// Generate generates the RPC stubs for all services in the given
+// Generate generates the RPC stubs for all plugin in the given
 // FileDescriptorProto.
 func (p *Plugin) Generate(file *generator.FileDescriptor) {
 	rpcStubs, webStubs := true, false

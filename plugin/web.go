@@ -1,11 +1,11 @@
-package services
+package plugin
 
 import (
 	descriptor "code.google.com/p/goprotobuf/compiler/descriptor"
 	"code.google.com/p/goprotobuf/compiler/generator"
 )
 
-// GenerateWebStubs is the core of the services package.
+// GenerateWebStubs is the core of the plugin package.
 // It generates an interface based on the ServiceDescriptorProto and an RPC
 // client implementation of the interface as well as three helper functions
 // to create the Client and Server necessary to utilize the service over
@@ -51,7 +51,7 @@ func (p *Plugin) GenerateWebStubs(svc *descriptor.ServiceDescriptorProto) {
 	p.P("// ", name, " remotely.")
 	p.P("func New", name, "Client(conn net.Conn) ", name, " {")
 	p.In()
-	p.P("return rpc", name, "Client{rpc.NewClientWithCodec(services.NewClientCodec(conn))}")
+	p.P("return rpc", name, "Client{rpc.NewClientWithCodec(plugin.NewClientCodec(conn))}")
 	p.Out()
 	p.P("}")
 	p.P()
@@ -64,7 +64,7 @@ func (p *Plugin) GenerateWebStubs(svc *descriptor.ServiceDescriptorProto) {
 	p.P("return err")
 	p.Out()
 	p.P("}")
-	p.P("srv.ServeCodec(services.NewServerCodec(conn))")
+	p.P("srv.ServeCodec(plugin.NewServerCodec(conn))")
 	p.P("return nil")
 	p.Out()
 	p.P("}")
@@ -106,7 +106,7 @@ func (p *Plugin) GenerateWebStubs(svc *descriptor.ServiceDescriptorProto) {
 	p.P("return err")
 	p.Out()
 	p.P("}")
-	p.P("go srv.ServeCodec(services.NewServerCodec(conn))")
+	p.P("go srv.ServeCodec(plugin.NewServerCodec(conn))")
 	p.Out()
 	p.P("}")
 	p.P(`panic("unreachable")`)

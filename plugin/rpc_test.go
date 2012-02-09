@@ -1,4 +1,4 @@
-package services
+package plugin
 
 import (
 	"bytes"
@@ -53,7 +53,7 @@ func (this rpcMathClient) Add(in *AddInput, out *AddOutput) error {
 // NewMathClient returns an *rpc.Client wrapper for calling the methods of
 // Math remotely.
 func NewMathClient(conn net.Conn) Math {
-	return rpcMathClient{rpc.NewClientWithCodec(services.NewClientCodec(conn))}
+	return rpcMathClient{rpc.NewClientWithCodec(plugin.NewClientCodec(conn))}
 }
 
 // ServeMath serves the given Math backend implementation on conn.
@@ -62,7 +62,7 @@ func ServeMath(conn net.Conn, backend Math) error {
 	if err := srv.RegisterName("Math", backend); err != nil {
 		return err
 	}
-	srv.ServeCodec(services.NewServerCodec(conn))
+	srv.ServeCodec(plugin.NewServerCodec(conn))
 	return nil
 }
 
@@ -91,7 +91,7 @@ func ListenAndServeMath(addr string, backend Math) error {
 		if err != nil {
 			return err
 		}
-		go srv.ServeCodec(services.NewServerCodec(conn))
+		go srv.ServeCodec(plugin.NewServerCodec(conn))
 	}
 	panic("unreachable")
 }
@@ -112,14 +112,3 @@ func ListenAndServeMath(addr string, backend Math) error {
 		}
 	}
 }
-
-type fakeObject string
-
-func (fakeObject) PackageName() string                   { return "" }
-func (fakeObject) TypeName() []string                    { return nil }
-func (fakeObject) File() *descriptor.FileDescriptorProto { return nil }
-
-type fakeCompileGen struct{ *generator.Generator }
-
-func (fakeCompileGen) ObjectNamed(name string) generator.Object { return fakeObject(name) }
-func (fakeCompileGen) TypeName(obj generator.Object) string     { return string(obj.(fakeObject)) }
