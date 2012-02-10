@@ -28,7 +28,7 @@
 // containing the methods for that service and functions for creating and using
 // them with the RPC package and a webrpc package.
 //
-// Example - net/rpc
+// Generated Code for RPC
 //
 // Given the following basic .proto definition:
 //  
@@ -65,7 +65,7 @@
 // Any type which implements EchoService can thus be registered via ServeEchoService
 // or ListenAndServeEchoService to be called remotely via NewEchoServiceClient.
 //
-// Example - webrpc
+// Generated Code for WebRPC
 //
 // In addition to the above, the following are also generated to facilitate
 // serving RPCs over the web (e.g. AppEngine):
