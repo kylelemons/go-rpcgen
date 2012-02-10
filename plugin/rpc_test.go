@@ -53,7 +53,7 @@ func (this rpcMathClient) Add(in *AddInput, out *AddOutput) error {
 // NewMathClient returns an *rpc.Client wrapper for calling the methods of
 // Math remotely.
 func NewMathClient(conn net.Conn) Math {
-	return rpcMathClient{rpc.NewClientWithCodec(plugin.NewClientCodec(conn))}
+	return rpcMathClient{rpc.NewClientWithCodec(codec.NewClientCodec(conn))}
 }
 
 // ServeMath serves the given Math backend implementation on conn.
@@ -62,7 +62,7 @@ func ServeMath(conn net.Conn, backend Math) error {
 	if err := srv.RegisterName("Math", backend); err != nil {
 		return err
 	}
-	srv.ServeCodec(plugin.NewServerCodec(conn))
+	srv.ServeCodec(codec.NewServerCodec(conn))
 	return nil
 }
 
@@ -91,7 +91,7 @@ func ListenAndServeMath(addr string, backend Math) error {
 		if err != nil {
 			return err
 		}
-		go srv.ServeCodec(plugin.NewServerCodec(conn))
+		go srv.ServeCodec(codec.NewServerCodec(conn))
 	}
 	panic("unreachable")
 }

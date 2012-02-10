@@ -46,7 +46,7 @@ func (this rpcEchoServiceClient) Echo(in *Payload, out *Payload) error {
 // NewEchoServiceClient returns an *rpc.Client wrapper for calling the methods of
 // EchoService remotely.
 func NewEchoServiceClient(conn net.Conn) EchoService {
-	return rpcEchoServiceClient{rpc.NewClientWithCodec(plugin.NewClientCodec(conn))}
+	return rpcEchoServiceClient{rpc.NewClientWithCodec(codec.NewClientCodec(conn))}
 }
 
 // ServeEchoService serves the given EchoService backend implementation on conn.
@@ -55,7 +55,7 @@ func ServeEchoService(conn net.Conn, backend EchoService) error {
 	if err := srv.RegisterName("EchoService", backend); err != nil {
 		return err
 	}
-	srv.ServeCodec(plugin.NewServerCodec(conn))
+	srv.ServeCodec(codec.NewServerCodec(conn))
 	return nil
 }
 
@@ -84,7 +84,7 @@ func ListenAndServeEchoService(addr string, backend EchoService) error {
 		if err != nil {
 			return err
 		}
-		go srv.ServeCodec(plugin.NewServerCodec(conn))
+		go srv.ServeCodec(codec.NewServerCodec(conn))
 	}
 	panic("unreachable")
 }

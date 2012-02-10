@@ -2,7 +2,7 @@
 // RPC stubs for use with the the net/rpc package.
 //
 // To register the plugin, import this package as follows:
-//   import _ "github.com/kylelemons/go-rpcgen/codec"
+//   import _ "github.com/kylelemons/go-rpcgen/plugin"
 package plugin
 
 import (

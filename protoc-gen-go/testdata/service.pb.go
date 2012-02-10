@@ -55,7 +55,7 @@ func (this rpcConcatServiceClient) Concat(in *Args, out *Return) error {
 // NewConcatServiceClient returns an *rpc.Client wrapper for calling the methods of
 // ConcatService remotely.
 func NewConcatServiceClient(conn net.Conn) ConcatService {
-	return rpcConcatServiceClient{rpc.NewClientWithCodec(plugin.NewClientCodec(conn))}
+	return rpcConcatServiceClient{rpc.NewClientWithCodec(codec.NewClientCodec(conn))}
 }
 
 // ServeConcatService serves the given ConcatService backend implementation on conn.
@@ -64,7 +64,7 @@ func ServeConcatService(conn net.Conn, backend ConcatService) error {
 	if err := srv.RegisterName("ConcatService", backend); err != nil {
 		return err
 	}
-	srv.ServeCodec(plugin.NewServerCodec(conn))
+	srv.ServeCodec(codec.NewServerCodec(conn))
 	return nil
 }
 
@@ -93,7 +93,7 @@ func ListenAndServeConcatService(addr string, backend ConcatService) error {
 		if err != nil {
 			return err
 		}
-		go srv.ServeCodec(plugin.NewServerCodec(conn))
+		go srv.ServeCodec(codec.NewServerCodec(conn))
 	}
 	panic("unreachable")
 }

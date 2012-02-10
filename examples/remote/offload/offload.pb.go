@@ -54,7 +54,7 @@ func (this rpcOffloadServiceClient) Compute(in *DataSet, out *ResultSet) error {
 // NewOffloadServiceClient returns an *rpc.Client wrapper for calling the methods of
 // OffloadService remotely.
 func NewOffloadServiceClient(conn net.Conn) OffloadService {
-	return rpcOffloadServiceClient{rpc.NewClientWithCodec(plugin.NewClientCodec(conn))}
+	return rpcOffloadServiceClient{rpc.NewClientWithCodec(codec.NewClientCodec(conn))}
 }
 
 // ServeOffloadService serves the given OffloadService backend implementation on conn.
@@ -63,7 +63,7 @@ func ServeOffloadService(conn net.Conn, backend OffloadService) error {
 	if err := srv.RegisterName("OffloadService", backend); err != nil {
 		return err
 	}
-	srv.ServeCodec(plugin.NewServerCodec(conn))
+	srv.ServeCodec(codec.NewServerCodec(conn))
 	return nil
 }
 
@@ -92,7 +92,7 @@ func ListenAndServeOffloadService(addr string, backend OffloadService) error {
 		if err != nil {
 			return err
 		}
-		go srv.ServeCodec(plugin.NewServerCodec(conn))
+		go srv.ServeCodec(codec.NewServerCodec(conn))
 	}
 	panic("unreachable")
 }
