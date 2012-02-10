@@ -31,18 +31,7 @@ func main() {
 	// Serve requests on the given address.  We are going to run this in the
 	// background, since we're going to connect to our own service within the
 	// same daemon.  In general, these will be separate.
-	go echoservice.ListenAndServeEchoService(*addr, Echo{})
-
-	// Dial the EchoService (which is ourselves in this example)
-	e, err := echoservice.DialEchoService(*addr)
-	if err != nil {
-		log.Fatalf("dial: %s", err)
+	if err := echoservice.ListenAndServeEchoService(*addr, Echo{}); err != nil {
+		log.Fatalf("listenandserve: %s", err)
 	}
-
-	var in, out echoservice.Payload
-	in.Message = message
-	if err := e.Echo(&in, &out); err != nil {
-		log.Fatalf("echo: %s", err)
-	}
-	log.Printf("echo: %s", *out.Message)
 }
