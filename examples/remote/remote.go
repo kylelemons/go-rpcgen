@@ -31,6 +31,8 @@ func (o *OffloadService) Compute(r *http.Request, in *offload.DataSet, out *offl
 }
 
 func main() {
+	flag.Parse()
+
 	offload.RegisterOffloadServiceWeb(&OffloadService{}, nil)
 	if err := webrpc.ListenAndServe(*addr, nil); err != nil {
 		log.Fatalf("listenandserve: %s", err)
