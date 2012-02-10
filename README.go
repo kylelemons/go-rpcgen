@@ -89,7 +89,7 @@
 // function registers the given backend implementation to be called from the
 // web via the webrpc package.
 //
-// Examples - other
+// Examples
 //
 // See the examples/ subdirectory for some complete examples demonstrating
 // basic usage.
