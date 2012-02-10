@@ -63,7 +63,8 @@
 //   func ServeEchoService(conn net.Conn, backend EchoService) error
 //
 // Any type which implements EchoService can thus be registered via ServeEchoService
-// or ListenAndServeEchoService to be called remotely via NewEchoServiceClient.
+// or ListenAndServeEchoService to be called remotely via NewEchoServiceClient or
+// DialEchoService.
 //
 // Generated Code for WebRPC
 //
