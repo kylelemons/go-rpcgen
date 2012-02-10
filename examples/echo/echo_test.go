@@ -10,6 +10,8 @@ import (
 var server = flag.String("server", "localhost:9999", "RPC server address")
 
 func TestEcho(t *testing.T) {
+	flag.Parse()
+
 	tests := []string{
 		"this is a test",
 		"woo, more tests\n",
