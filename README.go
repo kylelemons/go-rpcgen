@@ -11,34 +11,22 @@
 // protoc from that package, you will need to have your $GOPATH/bin in your
 // path when you run protoc.
 //
-// You will also need the goprotobuf package, which would normally be installed
-// automatically by the go tool but it needs some help currently.  For some
-// reason, the usual "go get --fix" doesn't quite do enough, so it must be done
-// in two steps:
-//   go get -v -u -d code.google.com/p/goprotobuf/compiler
-//   go fix code.google.com/p/goprotobuf/...
-//
 // Installation
 //
 // To install, run the following command:
 //   go get -v -u github.com/kylelemons/go-rpcgen/protoc-gen-go
-//
-// Because (as mentioned above) goprotobuf hasn't been fully updated to Go 1
-// yet, You will need to run "go fix" on the output of this package before the
-// .pb.go will compile under the go tool.
 //
 // Usage
 //
 // Usage of the package is pretty straightforward.  Once you have installed the
 // protoc-gen-go plugin, you can compile protobufs with the following command
 // (where file.proto is the protocol buffer file(s) in question):
-//   protoc --go_out=. file.proto && go fix
+//   protoc --go_out=. file.proto
 //
 // This will generate a file named like file.pb.go which contains, in addition
 // to the usual Go bindings for the messages, an interface for each service
 // containing the methods for that service and functions for creating and using
-// them with the RPC package.  As mentioned above, the "go fix" is necessary to
-// fix the imports in the generated .pb.go file.
+// them with the RPC package and a webrpc package.
 //
 // Example - net/rpc
 //
