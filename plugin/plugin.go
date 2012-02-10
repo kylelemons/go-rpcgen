@@ -56,9 +56,12 @@ func (p *Plugin) Generate(file *generator.FileDescriptor) {
 	for _, stub := range p.stubs {
 		for _, svc := range file.Service {
 			switch stub {
-			case "rpc": p.GenerateRPCStubs(svc)
-			case "web": p.GenerateWebStubs(svc)
-			default:    p.Fail("unknown go_stub", stub)
+			case "rpc":
+				p.GenerateRPCStubs(svc)
+			case "web":
+				p.GenerateWebStubs(svc)
+			default:
+				p.Fail("unknown go_stub", stub)
 			}
 		}
 	}

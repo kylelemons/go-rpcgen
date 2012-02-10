@@ -22,6 +22,7 @@ const (
 )
 
 type Protocol string
+
 func (p Protocol) String() string { return string(p) }
 
 type Handler func(*Call) error
@@ -83,7 +84,7 @@ func (m ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	handler, found := m[r.URL.Path]
 	if !found {
 		w.Header().Set("Content-Type", "text/plain")
-		http.Error(w, r.URL.Path + " is not a registered RPC", http.StatusNotFound)
+		http.Error(w, r.URL.Path+" is not a registered RPC", http.StatusNotFound)
 		return
 	}
 
@@ -92,18 +93,18 @@ func (m ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "application/json":
 	case "application/protobuf":
 	default:
-		http.Error(w, ctype + ": invalid content type (must be application/json or application/protobuf)", http.StatusUnsupportedMediaType)
+		http.Error(w, ctype+": invalid content type (must be application/json or application/protobuf)", http.StatusUnsupportedMediaType)
 		return
 	}
 
 	c := &Call{
 		ResponseWriter: w,
-		Request: r,
-		ContentType: ctype,
+		Request:        r,
+		ContentType:    ctype,
 	}
 	if err := handler(c); err != nil {
 		w.Header().Set("Content-Type", "text/plain")
-		http.Error(w, r.URL.Path + ": " + err.Error(), http.StatusInternalServerError)
+		http.Error(w, r.URL.Path+": "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -152,7 +153,7 @@ func Post(protocol Protocol, base *url.URL, method string, in, out interface{}) 
 
 	switch protocol {
 	case JSON:
-		err = json.NewDecoder(resp.Body).Decode(out);
+		err = json.NewDecoder(resp.Body).Decode(out)
 	case ProtoBuf:
 		b, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
@@ -175,5 +176,5 @@ func ListenAndServe(addr string, mux ServeMux) error {
 }
 
 func init() {
-	http.Handle(DefaultRPCPath + "/", DefaultServeMux)
+	http.Handle(DefaultRPCPath+"/", DefaultServeMux)
 }

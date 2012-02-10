@@ -22,7 +22,7 @@ func (o *OffloadService) Compute(r *http.Request, in *offload.DataSet, out *offl
 	res := make([]byte, len(str))
 	last := len(str) - 1
 	for i := range str {
-		res[last - i] = str[i]
+		res[last-i] = str[i]
 	}
 	str = string(res)
 
