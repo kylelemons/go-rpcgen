@@ -141,60 +141,24 @@ func NewClientCodec(conn net.Conn) *ClientCodec {
 // WriteRequest writes the appropriate header protobuf and the given protobuf
 // to the connection (each prefixed with a uvarint indicating its size).
 func (c *ClientCodec) WriteRequest(req *rpc.Request, pb interface{}) error {
-	var header wire.Header
-	var size []byte
-	var data []byte
-	var err error
-
-	// Allocate enough space for the biggest size
-	size = make([]byte, binary.MaxVarintLen64)
-
 	// Write the header
-	header.Method = &req.ServiceMethod
-	header.Seq = &req.Seq
-	if data, err = proto.Marshal(&header); err != nil {
-		return err
+	header := wire.Header{
+		Method: &req.ServiceMethod,
+		Seq:    &req.Seq,
 	}
-	size = size[:binary.PutUvarint(size, uint64(len(data)))]
-	if _, err = c.w.Write(size); err != nil {
-		return err
-	}
-	if _, err = c.w.Write(data); err != nil {
+	if err := WriteProto(c.w, &header); err != nil {
 		return err
 	}
 
-	// Write the proto
-	size = size[:cap(size)]
-	if data, err = proto.Marshal(pb); err != nil {
-		return err
-	}
-	size = size[:binary.PutUvarint(size, uint64(len(data)))]
-	if _, err = c.w.Write(size); err != nil {
-		return err
-	}
-	if _, err = c.w.Write(data); err != nil {
-		return err
-	}
-
-	// All done
-	return nil
+	return WriteProto(c.w, pb)
 }
 
 // ReadResponseHeader reads the header protobuf (which is prefixed by a uvarint
 // indicating its size) from the connection, decodes it, and stores the fields
 // in the given request.
 func (c *ClientCodec) ReadResponseHeader(resp *rpc.Response) error {
-	size, err := binary.ReadUvarint(c.r)
-	if err != nil {
-		return err
-	}
-	// TODO max size?
-	message := make([]byte, size)
-	if _, err := io.ReadFull(c.r, message); err != nil {
-		return err
-	}
 	var header wire.Header
-	if err := proto.Unmarshal(message, &header); err != nil {
+	if err := ReadProto(c.r, &header); err != nil {
 		return err
 	}
 	if header.Method == nil {
@@ -217,20 +181,7 @@ func (c *ClientCodec) ReadResponseHeader(resp *rpc.Response) error {
 // is zero, nothing is done (this indicates an error condition, which was
 // encapsulated in the header)
 func (c *ClientCodec) ReadResponseBody(pb interface{}) error {
-	size, err := binary.ReadUvarint(c.r)
-	if err != nil {
-		return err
-	}
-	if size == 0 || pb == nil {
-		return nil
-	}
-
-	// TODO max size?
-	message := make([]byte, size)
-	if _, err := io.ReadFull(c.r, message); err != nil {
-		return err
-	}
-	return proto.Unmarshal(message, pb)
+	return ReadProto(c.r, pb)
 }
 
 // Close closes the underlying connection.
