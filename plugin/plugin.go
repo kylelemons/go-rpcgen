@@ -6,8 +6,6 @@
 package plugin
 
 import (
-	"strconv"
-
 	"code.google.com/p/goprotobuf/compiler/generator"
 )
 
@@ -21,6 +19,7 @@ type compileGen interface {
 	Out()
 
 	// Errors
+	Fail(...string)
 	Error(error, ...string)
 
 	// Object lookup
@@ -33,6 +32,8 @@ type Plugin struct {
 	rpcImports bool
 	webImports bool
 	compileGen
+
+	stubs []string
 }
 
 // Name returns the name of the plugin.
@@ -42,41 +43,23 @@ func (p *Plugin) Name() string { return "go-rpcgen" }
 // Generate* class of functions.
 func (p *Plugin) Init(g *generator.Generator) {
 	p.compileGen = g
+
+	// TODO: Figure out some way to derive these
+	// - Command-line?
+	// - .proto directives?
+	p.stubs = []string{"rpc", "web"}
 }
 
 // Generate generates the RPC stubs for all plugin in the given
 // FileDescriptorProto.
 func (p *Plugin) Generate(file *generator.FileDescriptor) {
-	rpcStubs, webStubs := true, true
-
-	if options := file.FileDescriptorProto.Options; options != nil {
-		for _, option := range options.UninterpretedOption {
-			if len(option.Name) != 1 || option.Name[0].NamePart == nil {
-				continue
-			}
-			var err error
-			name := *option.Name[0].NamePart
-			switch name {
-			case "go_rpc_stubs":
-				rpcStubs, err = strconv.ParseBool(string(option.StringValue))
-			case "go_web_stubs":
-				webStubs, err = strconv.ParseBool(string(option.StringValue))
-			}
-			if err != nil {
-				p.Error(err, "Could not parse value of " + name)
-			}
-		}
-	}
-
-	if rpcStubs {
+	for _, stub := range p.stubs {
 		for _, svc := range file.Service {
-			p.GenerateRPCStubs(svc)
-		}
-	}
-
-	if webStubs {
-		for _, svc := range file.Service {
-			p.GenerateWebStubs(svc)
+			switch stub {
+			case "rpc": p.GenerateRPCStubs(svc)
+			case "web": p.GenerateWebStubs(svc)
+			default:    p.Fail("unknown go_stub", stub)
+			}
 		}
 	}
 }
