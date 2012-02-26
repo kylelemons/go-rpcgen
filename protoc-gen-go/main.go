@@ -47,7 +47,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"code.google.com/p/goprotobuf/compiler/generator"
+	"code.google.com/p/goprotobuf/protoc-gen-go/generator"
 	"code.google.com/p/goprotobuf/proto"
 
 	_ "github.com/kylelemons/go-rpcgen/plugin"
