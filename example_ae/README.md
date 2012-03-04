@@ -31,7 +31,7 @@ Testing This Example
 - Execute the following to run locally:
 
         ../ae_install.sh
-        ../aex_protoc.sh whoami/*.proto
+        ../ae_protoc.sh whoami/*.proto
         (cd github.com/kylelemons/go-rpcgen/; mkdir -p ae_example; ln -s ../../../../whoami ae_example/)
         dev_appserver.py .
         go run client/client.go http://localhost:6060/
