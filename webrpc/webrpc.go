@@ -7,6 +7,7 @@
 package webrpc
 
 import (
+	"io"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -23,18 +24,19 @@ const (
 	DefaultRPCPath = "/_webRPC_"
 )
 
-// Protocols allowed in webrpc
-const (
-	JSON     Protocol = "application/json"
-	ProtoBuf Protocol = "application/protobuf"
-)
+// A Protocol is a predefined encoder/decoder for WebRPC.
+type Protocol interface {
+	String() string // Return the MIME type of the protocol
+	Decode(io.Reader, interface{}) error
+	Encode(io.Writer, interface{}) error
+}
 
-// A Protocol is a predefined MIME string defining one of the protocols
-// supported by the webrpc package.
-type Protocol string
+// protocols stores the map of content types to known protocols
+var protocols = map[string]Protocol{}
 
-// String returns the MIME type of the Protocol.
-func (p Protocol) String() string { return string(p) }
+func RegisterProtocol(p Protocol) {
+	protocols[p.String()] = p
+}
 
 // A Handler processes an incoming RPC request.  These are generated
 // automatically by protoc-gen-go for service definitions and don't usually
@@ -52,37 +54,18 @@ type Call struct {
 
 // ReadRequest is used by the code generated automatically by protoc-gen-go.
 func (c *Call) ReadRequest(pb interface{}) error {
-	ctype := Protocol(c.ContentType)
-	switch ctype {
-	case JSON:
-		return json.NewDecoder(c.Request.Body).Decode(pb)
-	case ProtoBuf:
-		body, err := ioutil.ReadAll(c.Request.Body)
-		if err != nil {
-			return fmt.Errorf("webrpc: readall: %s", err)
-		}
-		return proto.Unmarshal(body, pb)
+	if proto, ok := protocols[c.ContentType]; ok {
+		return proto.Decode(c.Request.Body, pb)
 	}
-	return fmt.Errorf("webrpc: read: %s: bad content type", ctype)
+	return fmt.Errorf("webrpc: read: %s: bad content type", c.ContentType)
 }
 
 // WriteResponse is used by the code generated automatically by protoc-gen-go.
 func (c *Call) WriteResponse(pb interface{}) error {
-	ctype := c.ContentType
-	switch ctype {
-	case "application/json":
-		return json.NewEncoder(c.ResponseWriter).Encode(pb)
-	case "application/protobuf":
-		body, err := proto.Marshal(pb)
-		if err != nil {
-			return fmt.Errorf("webrpc: readall: %s", err)
-		}
-		if _, err := c.ResponseWriter.Write(body); err != nil {
-			return fmt.Errorf("webrpc: write: %s", err)
-		}
-		return nil
+	if proto, ok := protocols[c.ContentType]; ok {
+		return proto.Encode(c.ResponseWriter, pb)
 	}
-	return fmt.Errorf("webrpc: write: %s: bad content type", ctype)
+	return fmt.Errorf("webrpc: write: %s: bad content type", c.ContentType)
 }
 
 // A ServeMux collects all of the handlers registered (usually by the

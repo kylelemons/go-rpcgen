@@ -90,6 +90,23 @@
 // function registers the given backend implementation to be called from the
 // web via the webrpc package.
 //
+// AppEngine
+//
+// To use WebRPC with AppEngine, copy the repository into the appengine directory
+// "$PROJECT/github.com/kylelemons/go-rpcgen" and delete the "webrpc/proto.go" file.
+// A script is provided at the root of the go-rpcgen directory called "ae_protoc.sh"
+// which will generate and then sanitize a .proto file.  If you don't use extensions
+// or other advanced protobuf features, this should be suitable to sanitize the output,
+// but you may have to make manual changes to get it to compile if it doesn't work.  One
+// side-effect of this script is that the proto objects will no longer have String()
+// methods; if you need to make use of these, you should add them in manually in another
+// .go file alongside the .pb.go file.
+//
+// When the AppEngine toolchain supports the
+//   // +build !appengine
+// directive, the package should work without modification (though your .proto files
+// will still need to be sanitized before they can be reused).
+//
 // Examples
 //
 // See the examples/ subdirectory for some complete examples demonstrating

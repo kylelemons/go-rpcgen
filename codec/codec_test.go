@@ -3,12 +3,13 @@ package codec
 import (
 	"bytes"
 	"encoding/binary"
-	"net/rpc"
 	"reflect"
 	"testing"
 
 	"code.google.com/p/goprotobuf/proto"
 )
+
+type InvalidRequest struct{}
 
 func TestWriteProto(t *testing.T) {
 	tests := []struct {
@@ -18,8 +19,8 @@ func TestWriteProto(t *testing.T) {
 	}{
 		{
 			Desc: "Test the zero size proto",
-			Out:  &rpc.InvalidRequest{},
-			In:   &rpc.InvalidRequest{},
+			Out:  &InvalidRequest{},
+			In:   &InvalidRequest{},
 		},
 	}
 

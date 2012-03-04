@@ -3,11 +3,9 @@
 
 package wire
 
-import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
-var _ = proto.GetString
 var _ = math.Inf
 
 type Header struct {
@@ -18,7 +16,6 @@ type Header struct {
 }
 
 func (this *Header) Reset()         { *this = Header{} }
-func (this *Header) String() string { return proto.CompactTextString(this) }
 
 func init() {
 }

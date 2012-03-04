@@ -3,7 +3,6 @@
 
 package svc
 
-import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
 import "net"
@@ -14,7 +13,6 @@ import "net/http"
 import "github.com/kylelemons/go-rpcgen/webrpc"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
-var _ = proto.GetString
 var _ = math.Inf
 
 type Args struct {
@@ -24,7 +22,6 @@ type Args struct {
 }
 
 func (this *Args) Reset()         { *this = Args{} }
-func (this *Args) String() string { return proto.CompactTextString(this) }
 
 type Return struct {
 	C                *string `protobuf:"bytes,1,req,name=c" json:"c,omitempty"`
@@ -32,7 +29,6 @@ type Return struct {
 }
 
 func (this *Return) Reset()         { *this = Return{} }
-func (this *Return) String() string { return proto.CompactTextString(this) }
 
 func init() {
 }
