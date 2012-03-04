@@ -1,6 +1,6 @@
-// Package webrpc implements a web-based JSON and ProtoBuf RPC protocol roughly
-// compatible with google-protorpc.  It works in tandem with the go-rpcgen
-// protoc-gen-go plugin, which generates the bindings.
+// Package webrpc implements a web-based JSON, Gob and ProtoBuf RPC protocol
+// roughly compatible with google-protorpc.  It works in tandem with the
+// go-rpcgen protoc-gen-go plugin, which generates the bindings.
 //
 // By default, webrpc.DefaultServeMux is handled by the default HTTP package,
 // so it will interoperate with standard HTTP servers and AppEngine.
@@ -9,14 +9,10 @@ package webrpc
 import (
 	"io"
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"net/http"
 	"path"
-
-	"code.google.com/p/goprotobuf/proto"
 )
 
 const (
@@ -97,11 +93,8 @@ func (m ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctype := r.Header.Get("Content-Type")
-	switch ctype {
-	case "application/json":
-	case "application/protobuf":
-	default:
-		http.Error(w, ctype+": invalid content type (must be application/json or application/protobuf)", http.StatusUnsupportedMediaType)
+	if _, ok := protocols[ctype]; !ok {
+		http.Error(w, ctype+": unrecognized content type", http.StatusUnsupportedMediaType)
 		return
 	}
 
@@ -124,30 +117,21 @@ var DefaultServeMux = ServeMux{}
 // Post is used by the code generated automatically by protoc-gen-go for making
 // RPC calls remotely.
 func Post(protocol Protocol, base *url.URL, method string, in, out interface{}) error {
-	var b []byte
-	var err error
+	b := new(bytes.Buffer)
 
 	url := *base
 	url.Path = path.Join(url.Path, DefaultRPCPath, method)
 
-	switch protocol {
-	case JSON:
-		b, err = json.Marshal(in)
-	case ProtoBuf:
-		b, err = proto.Marshal(in)
-	default:
-		return fmt.Errorf("webrpc.post: %s: bad content type", protocol)
-	}
-	if err != nil {
+	if err := protocol.Encode(b, in); err != nil {
 		return fmt.Errorf("webrpc.post: %s: marshal: %s", protocol, err)
 	}
 
-	req, err := http.NewRequest("POST", url.String(), bytes.NewBuffer(b))
+	req, err := http.NewRequest("POST", url.String(), b)
 	if err != nil {
 		return fmt.Errorf("webrpc.post: newrequest: %s", err)
 	}
 	req.Header.Set("Content-Type", protocol.String())
-	req.Header.Set("Content-Length", fmt.Sprintf("%d", len(b)))
+	req.Header.Set("Content-Length", fmt.Sprintf("%d", b.Len()))
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -155,25 +139,15 @@ func Post(protocol Protocol, base *url.URL, method string, in, out interface{}) 
 	}
 	defer resp.Body.Close()
 
+	b.Reset()
 	if resp.StatusCode != http.StatusOK {
-		b, err = ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return fmt.Errorf("webrpc.post: readall: %s", err)
+		if _, err := b.ReadFrom(resp.Body); err != nil {
+			return fmt.Errorf("webrpc.post: read: %s", err)
 		}
-		return fmt.Errorf("webrc.post: %s: %s", resp.Status, bytes.TrimSpace(b))
+		return fmt.Errorf("webrc.post: %s: %s", resp.Status, bytes.TrimSpace(b.Bytes()))
 	}
 
-	switch protocol {
-	case JSON:
-		err = json.NewDecoder(resp.Body).Decode(out)
-	case ProtoBuf:
-		b, err = ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return fmt.Errorf("webrpc.post: readall: %s", err)
-		}
-		err = proto.Unmarshal(b, out)
-	}
-	if err != nil {
+	if err := protocol.Decode(resp.Body, out); err != nil {
 		return fmt.Errorf("webrpc.post: %s: unmarshal: %s in %q", protocol, err, b)
 	}
 

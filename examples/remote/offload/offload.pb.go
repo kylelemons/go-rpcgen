@@ -3,6 +3,7 @@
 
 package offload
 
+import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
 import "net"
@@ -13,6 +14,7 @@ import "net/http"
 import "github.com/kylelemons/go-rpcgen/webrpc"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
+var _ = proto.GetString
 var _ = math.Inf
 
 type DataSet struct {
@@ -21,6 +23,7 @@ type DataSet struct {
 }
 
 func (this *DataSet) Reset()         { *this = DataSet{} }
+func (this *DataSet) String() string { return proto.CompactTextString(this) }
 
 type ResultSet struct {
 	Result           *string `protobuf:"bytes,1,opt,name=result" json:"result,omitempty"`
@@ -28,6 +31,7 @@ type ResultSet struct {
 }
 
 func (this *ResultSet) Reset()         { *this = ResultSet{} }
+func (this *ResultSet) String() string { return proto.CompactTextString(this) }
 
 func init() {
 }

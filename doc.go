@@ -28,10 +28,20 @@
 // containing the methods for that service and functions for creating and using
 // them with the RPC package and a webrpc package.
 //
+// Configuration
+//
+// By default, protoc-gen-go will generate both RPC and web-based stubs,
+// but this can be configured by setting the GO_STUBS environment variable.
+// This variable is a comma-separated list of the stubs to generate.  The known
+// stubs are:
+//
+//   rpc // Generate stubs for net/rpc
+//   web // Generate stubs for direct HTTP access, e.g. via AppEngine
+//
 // Generated Code for RPC
 //
 // Given the following basic .proto definition:
-//  
+//
 //   package echoservice;
 //   message payload {
 //       required string message = 1;
@@ -41,7 +51,7 @@
 //   }
 //
 // The protoc-gen-go plugin will generate a service definition similar to below:
-//   
+//
 //   // EchoService is an interface satisfied by the generated client and
 //   // which must be implemented by the object wrapped by the server.
 //   type EchoService interface {
@@ -50,11 +60,11 @@
 //
 //   // DialEchoService returns a EchoService for calling the EchoService servince at addr (TCP).
 //   func DialEchoService(addr string) (EchoService, error) {
-//   
+//
 //   // NewEchoServiceClient returns an *rpc.Client wrapper for calling the methods of
 //   // EchoService remotely.
 //   func NewEchoServiceClient(conn net.Conn) EchoService
-//   
+//
 //   // ListenAndServeEchoService serves the given EchoService backend implementation
 //   // on all connections accepted as a result of listening on addr (TCP).
 //   func ListenAndServeEchoService(addr string, backend EchoService) error
@@ -69,14 +79,14 @@
 // Generated Code for WebRPC
 //
 // In addition to the above, the following are also generated to facilitate
-// serving RPCs over the web (e.g. AppEngine):
-//   
+// serving RPCs over the web (e.g. AppEngine; see ae_example/):
+//
 //   // EchoServiceWeb is the web-based RPC version of the interface which
 //   // must be implemented by the object wrapped by the webrpc server.
 //   type EchoServiceWeb interface {
 //     Echo(r *http.Request, in *Payload, out *Payload) error
 //   }
-//   
+//
 //   // NewEchoServiceWebClient returns a webrpc wrapper for calling the methods of EchoService
 //   // remotely via the web.  The remote URL is the base URL of the webrpc server.
 //   func NewEchoServiceWebClient(remote *url.URL, pro webrpc.Protocol) EchoService
@@ -90,25 +100,9 @@
 // function registers the given backend implementation to be called from the
 // web via the webrpc package.
 //
-// AppEngine
-//
-// To use WebRPC with AppEngine, copy the repository into the appengine directory
-// "$PROJECT/github.com/kylelemons/go-rpcgen" and delete the "webrpc/proto.go" file.
-// A script is provided at the root of the go-rpcgen directory called "ae_protoc.sh"
-// which will generate and then sanitize a .proto file.  If you don't use extensions
-// or other advanced protobuf features, this should be suitable to sanitize the output,
-// but you may have to make manual changes to get it to compile if it doesn't work.  One
-// side-effect of this script is that the proto objects will no longer have String()
-// methods; if you need to make use of these, you should add them in manually in another
-// .go file alongside the .pb.go file.
-//
-// When the AppEngine toolchain supports the
-//   // +build !appengine
-// directive, the package should work without modification (though your .proto files
-// will still need to be sanitized before they can be reused).
-//
 // Examples
 //
 // See the examples/ subdirectory for some complete examples demonstrating
-// basic usage.
+// basic usage.  See the ae_example/ subdirectory for an appengine example and
+// for directions about how to deploy go-rpcgen on appengine.
 package documentation

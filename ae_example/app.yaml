@@ -1,0 +1,9 @@
+application: your-application-name
+version: 1
+runtime: go
+api_version: go1beta
+
+handlers:
+- url: /.*
+  script: _go_app
+  login: optional

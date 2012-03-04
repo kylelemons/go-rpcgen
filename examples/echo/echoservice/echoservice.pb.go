@@ -3,6 +3,7 @@
 
 package echoservice
 
+import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
 import "net"
@@ -13,6 +14,7 @@ import "net/http"
 import "github.com/kylelemons/go-rpcgen/webrpc"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
+var _ = proto.GetString
 var _ = math.Inf
 
 type Payload struct {
@@ -21,6 +23,7 @@ type Payload struct {
 }
 
 func (this *Payload) Reset()         { *this = Payload{} }
+func (this *Payload) String() string { return proto.CompactTextString(this) }
 
 func init() {
 }

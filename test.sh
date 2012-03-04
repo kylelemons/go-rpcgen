@@ -19,11 +19,13 @@ export PATH="protoc-gen-go/:$PATH"
 
 echo "Building protobufs..."
 for PROTO in $(find . -name "*.proto" | grep -v "option.proto"); do
-  #echo " - Compiling ${PROTO}..."
-  #protoc --go_out=. ${PROTO}
-  ./ae_protoc.sh ${PROTO}
+  echo " - Compiling ${PROTO}..."
+  GO_STUBS="rpc,web" protoc --go_out=. ${PROTO}
 done
 
 echo "Testing packages..."
-go test -i ./...
-go test ./...
+PACKAGES=$(find ./* -type d | grep -v "ae" | grep -v "examples$")
+go test -i ${PACKAGES}
+go test ${PACKAGES}
+
+go install ./protoc-gen-go

@@ -1,0 +1,11 @@
+package whoami;
+
+message Empty{}
+
+message YouAre {
+  required string ip_addr = 1;
+}
+
+service WhoamiService {
+  rpc Whoami (Empty) returns (YouAre);
+}

@@ -6,6 +6,9 @@
 package plugin
 
 import (
+	"os"
+	"strings"
+
 	"code.google.com/p/goprotobuf/protoc-gen-go/generator"
 )
 
@@ -44,17 +47,19 @@ func (p *Plugin) Name() string { return "go-rpcgen" }
 func (p *Plugin) Init(g *generator.Generator) {
 	p.compileGen = g
 
-	// TODO: Figure out some way to derive these
-	// - Command-line?
-	// - .proto directives?
 	p.stubs = []string{"rpc", "web"}
+
+	if stubs := os.Getenv("GO_STUBS"); stubs != "" {
+		p.stubs = strings.Split(stubs, ",")
+	}
 }
 
 // Generate generates the RPC stubs for all plugin in the given
 // FileDescriptorProto.
 func (p *Plugin) Generate(file *generator.FileDescriptor) {
-	for _, stub := range p.stubs {
-		for _, svc := range file.Service {
+	for _, svc := range file.Service {
+		p.GenerateCommonStubs(svc)
+		for _, stub := range p.stubs {
 			switch stub {
 			case "rpc":
 				p.GenerateRPCStubs(svc)

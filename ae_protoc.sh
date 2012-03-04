@@ -11,6 +11,10 @@ if [[ "$#" -eq 0 ]]; then
   exit 1
 fi
 
+if [[ -z "$GO_STUBS" ]]; then
+  export GO_STUBS="web"
+fi
+
 for FILE in "$@"; do
   echo "Compiling $FILE..."
   protoc --go_out=. "$FILE"

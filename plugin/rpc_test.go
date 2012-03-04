@@ -32,13 +32,6 @@ func TestGenerateRPCStubs(t *testing.T) {
 				},
 			},
 			Output: `
-// Math is an interface satisfied by the generated client and
-// which must be implemented by the object wrapped by the server.
-type Math interface {
-	Sqrt(in *SqrtInput, out *SqrtOutput) error
-	Add(in *AddInput, out *AddOutput) error
-}
-
 // internal wrapper for type-safe RPC calling
 type rpcMathClient struct {
 	*rpc.Client
