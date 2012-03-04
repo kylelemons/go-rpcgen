@@ -7,7 +7,8 @@ Here are some directions about how to use go-rpcgen on AppEngine.
 Deploying to AppEngine
 ======================
 
-When deploying to AppEngine, you need two things:
+When deploying to AppEngine, you need two things:A
+
 1. The `go-rpcgen/webrpc` package
 1. Sanitized .pb.go files
 
@@ -26,14 +27,16 @@ but I would recommend doing it in a parallel .go file so that regeneration won't
 
 Testing This Example
 --------------------
-- Update app.yaml
-- Run the following to run locally:
+- Update app.yaml with your application name and the latest Go SDK Version
+- Execute the following to run locally:
+
     ../ae_install.sh
     ../aex_protoc.sh whoami/*.proto
+    (cd github.com/kylelemons/go-rpcgen/; mkdir -p ae_example; ln -s ../../../../whoami ae_example/)
     dev_appserver.py .
-- Run the following to test: (the first is needed for the go tool)
-    (cd github.com/kylelemons/go-rpcgen/; mkdir -p ae_example; ln -s ../../../../whoami ae_example/)`
     go run client/client.go http://localhost:6060/
+
 - Run the following to test remotely:
+
     appcfg.py update .
     go run client/client.go http://path-to-your-app.appspot.com/

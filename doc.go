@@ -79,7 +79,7 @@
 // Generated Code for WebRPC
 //
 // In addition to the above, the following are also generated to facilitate
-// serving RPCs over the web (e.g. AppEngine; see ae_example/):
+// serving RPCs over the web (e.g. AppEngine; see example_ae/):
 //
 //   // EchoServiceWeb is the web-based RPC version of the interface which
 //   // must be implemented by the object wrapped by the webrpc server.
@@ -103,6 +103,6 @@
 // Examples
 //
 // See the examples/ subdirectory for some complete examples demonstrating
-// basic usage.  See the ae_example/ subdirectory for an appengine example and
+// basic usage.  See the example_ae/ subdirectory for an appengine example and
 // for directions about how to deploy go-rpcgen on appengine.
 package documentation
