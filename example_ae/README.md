@@ -7,7 +7,7 @@ Here are some directions about how to use go-rpcgen on AppEngine.
 Deploying to AppEngine
 ======================
 
-When deploying to AppEngine, you need two things:A
+When deploying to AppEngine, you need two things:
 
 1. The `go-rpcgen/webrpc` package
 1. Sanitized .pb.go files
