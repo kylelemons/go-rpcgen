@@ -30,13 +30,13 @@ Testing This Example
 - Update app.yaml with your application name and the latest Go SDK Version
 - Execute the following to run locally:
 
-    ../ae_install.sh
-    ../aex_protoc.sh whoami/*.proto
-    (cd github.com/kylelemons/go-rpcgen/; mkdir -p ae_example; ln -s ../../../../whoami ae_example/)
-    dev_appserver.py .
-    go run client/client.go http://localhost:6060/
+        ../ae_install.sh
+        ../aex_protoc.sh whoami/*.proto
+        (cd github.com/kylelemons/go-rpcgen/; mkdir -p ae_example; ln -s ../../../../whoami ae_example/)
+        dev_appserver.py .
+        go run client/client.go http://localhost:6060/
 
 - Run the following to test remotely:
 
-    appcfg.py update .
-    go run client/client.go http://path-to-your-app.appspot.com/
+        appcfg.py update .
+        go run client/client.go http://path-to-your-app.appspot.com/
