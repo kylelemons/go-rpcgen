@@ -58,11 +58,11 @@
 //       Echo(in *Payload, out *Payload) error
 //   }
 //
-//   // DialEchoService returns a EchoService for calling the EchoService servince at addr (TCP).
+//   // DialEchoService returns a EchoService for calling the EchoService servince.
 //   func DialEchoService(addr string) (EchoService, error) {
 //
-//   // NewEchoServiceClient returns an *rpc.Client wrapper for calling the methods of
-//   // EchoService remotely.
+//   // NewEchoServiceClient returns an *rpc.Client wrapper for calling the methods
+//   // of EchoService remotely.
 //   func NewEchoServiceClient(conn net.Conn) EchoService
 //
 //   // ListenAndServeEchoService serves the given EchoService backend implementation
@@ -87,7 +87,7 @@
 //     Echo(r *http.Request, in *Payload, out *Payload) error
 //   }
 //
-//   // NewEchoServiceWebClient returns a webrpc wrapper for calling the methods of EchoService
+//   // NewEchoServiceWebClient returns a webrpc wrapper for calling EchoService
 //   // remotely via the web.  The remote URL is the base URL of the webrpc server.
 //   func NewEchoServiceWebClient(remote *url.URL, pro webrpc.Protocol) EchoService
 //
