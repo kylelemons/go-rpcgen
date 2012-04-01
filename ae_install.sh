@@ -11,5 +11,3 @@ for DIR in "webrpc"; do
   mkdir -p "${ROOT}/${PREFIX}/${DIR}"
   cp -R "${RPCGEN}/${DIR}/"* "${ROOT}/${PREFIX}/${DIR}/"
 done
-
-rm "${ROOT}/${PREFIX}/webrpc/proto.go"

@@ -1,10 +1,12 @@
+// +build !appengine
+
 package main
 
 import (
 	"os"
 	"log"
 	"net/url"
-	"github.com/kylelemons/go-rpcgen/ae_example/whoami"
+	"github.com/kylelemons/go-rpcgen/example_ae/whoami"
 	"github.com/kylelemons/go-rpcgen/webrpc"
 )
 

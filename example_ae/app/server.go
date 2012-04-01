@@ -1,9 +1,12 @@
+// +build appengine
+
 package server
 
 import (
 	"net/http"
-	_ "github.com/kylelemons/go-rpcgen/webrpc"
 	"whoami"
+
+	_ "github.com/kylelemons/go-rpcgen/webrpc"
 )
 
 type server struct{}
