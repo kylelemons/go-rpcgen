@@ -1,3 +1,4 @@
 .*.sw*
 *.txt
+*.sh
 protoc-gen-go
