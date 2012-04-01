@@ -5,7 +5,6 @@
 
 package whoami
 
-import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
 import "net/url"
@@ -13,7 +12,6 @@ import "net/http"
 import "github.com/kylelemons/go-rpcgen/webrpc"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
-var _ = proto.GetString
 var _ = math.Inf
 
 type Empty struct {
@@ -21,7 +19,6 @@ type Empty struct {
 }
 
 func (this *Empty) Reset()         { *this = Empty{} }
-func (this *Empty) String() string { return proto.CompactTextString(this) }
 
 type YouAre struct {
 	IpAddr           *string `protobuf:"bytes,1,req,name=ip_addr" json:"ip_addr,omitempty"`
@@ -29,7 +26,6 @@ type YouAre struct {
 }
 
 func (this *YouAre) Reset()         { *this = YouAre{} }
-func (this *YouAre) String() string { return proto.CompactTextString(this) }
 
 func init() {
 }

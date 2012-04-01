@@ -1,5 +1,5 @@
-application: your-application-name
-version: 1
+application: kevlar-go-test
+version: gorpcgentest
 runtime: go
 api_version: go1
 

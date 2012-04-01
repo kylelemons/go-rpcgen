@@ -46,7 +46,7 @@ for FILE in "$@"; do
     echo "g/proto\./d"          # Delete lines calling into the library
     echo "w"                    # Write
     echo "q"                    # Quit
-  } | ed -s "$PB_FILE"
+  } | ed -s "$AE_FILE"
 
   if [[ $AE_COPY -eq 0 ]]; then
     # If we are sharing the same proto, don't insert guards
