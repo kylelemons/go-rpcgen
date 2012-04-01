@@ -10,6 +10,7 @@ import (
 )
 
 type server struct{}
+
 func (server) Whoami(r *http.Request, _ *whoami.Empty, out *whoami.YouAre) error {
 	out.IpAddr = &r.RemoteAddr
 	return nil

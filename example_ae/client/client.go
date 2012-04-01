@@ -3,11 +3,11 @@
 package main
 
 import (
-	"os"
-	"log"
-	"net/url"
 	"github.com/kylelemons/go-rpcgen/example_ae/whoami"
 	"github.com/kylelemons/go-rpcgen/webrpc"
+	"log"
+	"net/url"
+	"os"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 		}
 
 		svc := whoami.NewWhoamiServiceWebClient(webrpc.JSON, url)
-		
+
 		in, out := whoami.Empty{}, whoami.YouAre{}
 		if err := svc.Whoami(&in, &out); err != nil {
 			log.Printf("whoami(%q): %s", url, err)

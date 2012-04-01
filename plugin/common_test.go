@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
+	"code.google.com/p/goprotobuf/proto"
 	descriptor "code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
 	"code.google.com/p/goprotobuf/protoc-gen-go/generator"
-	"code.google.com/p/goprotobuf/proto"
 )
 
 func TestGenerateCommonStubs(t *testing.T) {

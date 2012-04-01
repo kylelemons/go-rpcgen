@@ -26,7 +26,7 @@ func TestEcho(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		in := &echoservice.Payload{Message:&test}
+		in := &echoservice.Payload{Message: &test}
 		out := &echoservice.Payload{}
 		if err := echo.Echo(in, out); err != nil {
 			t.Fatalf("echo: %s", err)

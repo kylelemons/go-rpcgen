@@ -29,7 +29,7 @@ func main() {
 			log.Fatalf("read: %s", err)
 		}
 
-		in := &echoservice.Payload{Message:&line}
+		in := &echoservice.Payload{Message: &line}
 		out := &echoservice.Payload{}
 		if err := echo.Echo(in, out); err != nil {
 			log.Fatalf("echo: %s", err)

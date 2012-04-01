@@ -3,8 +3,8 @@ package codec
 import (
 	"bufio"
 	"encoding/binary"
-	"io"
 	"fmt"
+	"io"
 	"net"
 	"net/rpc"
 

@@ -18,14 +18,14 @@ type Empty struct {
 	XXX_unrecognized []byte `json:",omitempty"`
 }
 
-func (this *Empty) Reset()         { *this = Empty{} }
+func (this *Empty) Reset() { *this = Empty{} }
 
 type YouAre struct {
 	IpAddr           *string `protobuf:"bytes,1,req,name=ip_addr" json:"ip_addr,omitempty"`
 	XXX_unrecognized []byte  `json:",omitempty"`
 }
 
-func (this *YouAre) Reset()         { *this = YouAre{} }
+func (this *YouAre) Reset() { *this = YouAre{} }
 
 func init() {
 }

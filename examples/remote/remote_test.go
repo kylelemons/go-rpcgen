@@ -3,17 +3,17 @@ package main
 import (
 	"flag"
 	"log"
-	"testing"
 	"net/url"
+	"testing"
 
-	"github.com/kylelemons/go-rpcgen/webrpc"
 	"github.com/kylelemons/go-rpcgen/examples/remote/offload"
+	"github.com/kylelemons/go-rpcgen/webrpc"
 )
 
 var base = flag.String("base", "http://localhost:9999/", "RPC server base URL")
 
 func TestOffload(t *testing.T) {
-	tests := []struct{
+	tests := []struct {
 		In  string
 		Out string
 	}{

@@ -7,11 +7,11 @@
 package webrpc
 
 import (
-	"io"
 	"bytes"
 	"fmt"
-	"net/url"
+	"io"
 	"net/http"
+	"net/url"
 	"path"
 )
 

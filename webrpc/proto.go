@@ -15,6 +15,7 @@ import (
 var ProtoBuf Protocol = pbProtocol{}
 
 type pbProtocol struct{}
+
 func (pbProtocol) String() string { return "application/protobuf" }
 func (pbProtocol) Decode(r io.Reader, pb interface{}) error {
 	body, err := ioutil.ReadAll(r)
