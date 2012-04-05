@@ -1,0 +1,21 @@
+
+This is a simple add service that happens over a TLS connection.
+
+To generate code from the protobuf file:
+cd addservice
+protoc --go_out=. addservice.proto 
+
+To compile the server:
+go build add.go
+
+To compile the client:
+go build client.go
+
+To make test certificates:
+./makecert.sh AnyFakeOrRealEmail@foo.com
+
+To test run add in one window/shell and client in the other.
+
+
+
+

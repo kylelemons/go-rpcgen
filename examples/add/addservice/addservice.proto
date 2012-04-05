@@ -1,0 +1,14 @@
+package addservice;
+
+message add_message {
+	required int32 x=1;
+	required int32 y=2;
+}
+
+message sum_message {
+	required int32 z=1;
+}
+
+service add_service {
+  rpc add (add_message) returns (sum_message);
+}
