@@ -1,7 +1,7 @@
 #!/bin/bash
 # call this script with an email address (valid or not).
 # like:
-# ./makecert.sh joe@random.com
+# ./makecert.sh dummy@example.com
 mkdir certs
 rm certs/*
 echo "make server cert"

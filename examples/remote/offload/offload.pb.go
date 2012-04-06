@@ -19,7 +19,7 @@ var _ = math.Inf
 
 type DataSet struct {
 	Data             *string `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *DataSet) Reset()         { *this = DataSet{} }
@@ -27,7 +27,7 @@ func (this *DataSet) String() string { return proto.CompactTextString(this) }
 
 type ResultSet struct {
 	Result           *string `protobuf:"bytes,1,opt,name=result" json:"result,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *ResultSet) Reset()         { *this = ResultSet{} }

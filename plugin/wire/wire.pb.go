@@ -14,7 +14,7 @@ type Header struct {
 	Method           *string `protobuf:"bytes,1,opt,name=method" json:"method,omitempty"`
 	Seq              *uint64 `protobuf:"varint,2,opt,name=seq" json:"seq,omitempty"`
 	Error            *string `protobuf:"bytes,3,opt,name=error" json:"error,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *Header) Reset()         { *this = Header{} }

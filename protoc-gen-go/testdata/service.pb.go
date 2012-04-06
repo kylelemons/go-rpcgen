@@ -20,7 +20,7 @@ var _ = math.Inf
 type Args struct {
 	A                *string `protobuf:"bytes,1,req,name=a" json:"a,omitempty"`
 	B                *string `protobuf:"bytes,2,req,name=b" json:"b,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *Args) Reset()         { *this = Args{} }
@@ -28,7 +28,7 @@ func (this *Args) String() string { return proto.CompactTextString(this) }
 
 type Return struct {
 	C                *string `protobuf:"bytes,1,req,name=c" json:"c,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *Return) Reset()         { *this = Return{} }
