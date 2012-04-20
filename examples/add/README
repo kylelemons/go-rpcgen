@@ -2,16 +2,11 @@
 This is a simple add service that happens over a TLS connection.
 
 To run the server:
-go run add-server.go
+	go run add.go
 
 To run the client:
-go run add-client.go
+	go run client/client.go
 
-To make test certificates:
-./makecert.sh AnyFakeOrRealEmail@foo.com
-
-To test run add in one window/shell and client in the other.
-
-
+To see how certificates can be generated, check out makecert.sh
 
 
