@@ -17,7 +17,7 @@ var _ = proto.GetString
 var _ = math.Inf
 
 type Empty struct {
-	XXX_unrecognized []byte `json:",omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (this *Empty) Reset()         { *this = Empty{} }
@@ -25,7 +25,7 @@ func (this *Empty) String() string { return proto.CompactTextString(this) }
 
 type YouAre struct {
 	IpAddr           *string `protobuf:"bytes,1,req,name=ip_addr" json:"ip_addr,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *YouAre) Reset()         { *this = YouAre{} }

@@ -19,7 +19,7 @@ var _ = math.Inf
 
 type Payload struct {
 	Message          *string `protobuf:"bytes,1,req,name=message" json:"message,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *Payload) Reset()         { *this = Payload{} }
