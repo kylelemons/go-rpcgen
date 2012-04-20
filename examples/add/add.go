@@ -3,13 +3,16 @@ package main
 import (
 	"crypto/rand"
 	"crypto/tls"
-	//		"crypto/x509"
+	"crypto/rsa"
 	"flag"
 	"log"
 	"net"
 
-	//	"github.com/kylelemons/go-rpcgen/examples/add/addservice"
-	"./addservice"
+	"github.com/kylelemons/go-rpcgen/examples/add/addservice"
+)
+
+var  (
+		certDir = flag.String("certdir","certs","The directory to load the X509 certificates from")
 )
 
 // Add is the type which will implement the addservice.AddService interface
@@ -40,8 +43,8 @@ func handleClient(conn net.Conn) {
 		state := tlscon.ConnectionState()
 		// Note we could reject clients if we don't like their public key.		
 		for _, v := range state.PeerCertificates {
-			log.Printf("Server: public key %x", v.PublicKey)
-			log.Printf("Server: cient cert chain %#v", v.Subject)
+			log.Printf("Client: Server public key is:\n%x\n",v.PublicKey.(*rsa.PublicKey).N)
+//			log.Printf("Server: client cert chain %s", v.Subject.ToRDNSequence())
 		}
 		// Now that we have completed SSL/TLS 
 		addservice.ServeAddService(tlscon, Add{})
@@ -53,7 +56,8 @@ func serverTLSListen(service string) {
 	// Load x509 certificates for our private/public key, makecert.sh will
 	// generate them for you.
 
-	cert, err := tls.LoadX509KeyPair("certs/server.pem", "certs/server.key")
+	log.Printf("Loading certificates from directory: %s\n",*certDir)
+	cert, err := tls.LoadX509KeyPair(*certDir+"/server.pem", *certDir+"/server.key")
 	if err != nil {
 		log.Fatalf("server: loadkeys: %s", err)
 	}

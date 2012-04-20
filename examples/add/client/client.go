@@ -1,18 +1,27 @@
 package main
 
 import (
-	"./addservice"
 	"crypto/tls"
-	"crypto/x509"
+	"crypto/rsa"
 	"fmt"
 	"log"
+	"flag"
+
+	"github.com/kylelemons/go-rpcgen/examples/add/addservice"
 )
+
+var  (
+	certDir = flag.String("certdir","certs","The directory to load the X509 certificates from")
+)
+
 
 func openTLSClient(ipPort string) (*tls.Conn, error) {
 
 	// Note this loads standard x509 certificates, test keys can be
 	// generated with makecert.sh
-	cert, err := tls.LoadX509KeyPair("certs/client.pem", "certs/client.key")
+
+	log.Printf("Loading certificates from directory: %s\n",*certDir)
+	cert, err := tls.LoadX509KeyPair(*certDir+"/server.pem", *certDir+"/server.key")
 	if err != nil {
 		log.Fatalf("server: loadkeys: %s", err)
 	}
@@ -27,8 +36,8 @@ func openTLSClient(ipPort string) (*tls.Conn, error) {
 	// we could terminate the connection based on the public key if desired.
 	state := conn.ConnectionState()
 	for _, v := range state.PeerCertificates {
-		fmt.Println("Client: Server public key is:")
-		fmt.Println(x509.MarshalPKIXPublicKey(v.PublicKey))
+		log.Printf("Client: Server public key is:\n%x\n",v.PublicKey.(*rsa.PublicKey).N)
+
 	}
 	// Lets verify behind the doubt that both ends of the connection
 	// have completed the handshake and negotiated a SSL connection
@@ -43,6 +52,7 @@ func main() {
 
 	var x int32
 	var y int32
+	flag.Parse()
 	conn, err := openTLSClient("127.0.0.1:8000")
 	sum := addservice.NewAddServiceClient(conn)
 	if err != nil {
