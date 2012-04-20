@@ -32,7 +32,7 @@ done
 popd >/dev/null
 
 echo "Testing packages..."
-PACKAGES=$(find . -name "*.go" -exec dirname {} \; | sort | uniq | egrep -v "^\.$|ae")
+PACKAGES=$(find . -name "*_test.go" -exec dirname {} \; | sort | uniq)
 go test -i ${PACKAGES}
 go test ${PACKAGES}
 
