@@ -1,0 +1,12 @@
+
+This is a simple add service that happens over a TLS connection.
+
+To run the server:
+	go run add.go --certdir certs
+
+To run the client:
+	go run client/client.go --certdir certs
+
+To see how certificates can be generated, check out makecert.sh
+
+
