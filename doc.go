@@ -105,4 +105,9 @@
 // See the examples/ subdirectory for some complete examples demonstrating
 // basic usage.  See the example_ae/ subdirectory for an appengine example and
 // for directions about how to deploy go-rpcgen on appengine.
+//
+// Acknowledgements
+//
+// Thanks to the following people:
+//   Bill Broadely <bill@broadley.org> - for beta testing and examples
 package documentation
