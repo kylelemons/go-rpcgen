@@ -15,14 +15,14 @@ import "github.com/kylelemons/go-rpcgen/webrpc"
 var _ = math.Inf
 
 type Empty struct {
-	XXX_unrecognized []byte `json:",omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (this *Empty) Reset()         { *this = Empty{} }
 
 type YouAre struct {
 	IpAddr           *string `protobuf:"bytes,1,req,name=ip_addr" json:"ip_addr,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *YouAre) Reset()         { *this = YouAre{} }
