@@ -17,14 +17,24 @@ var ProtoBuf Protocol = pbProtocol{}
 type pbProtocol struct{}
 
 func (pbProtocol) String() string { return "application/protobuf" }
-func (pbProtocol) Decode(r io.Reader, pb interface{}) error {
+func (pbProtocol) Decode(r io.Reader, obj interface{}) error {
+	pb, ok := obj.(proto.Message)
+	if !ok {
+		return fmt.Errorf("%T does not implement proto.Message", obj)
+	}
+
 	body, err := ioutil.ReadAll(r)
 	if err != nil {
 		return fmt.Errorf("webrpc: decode: %s", err)
 	}
 	return proto.Unmarshal(body, pb)
 }
-func (pbProtocol) Encode(w io.Writer, pb interface{}) error {
+func (pbProtocol) Encode(w io.Writer, obj interface{}) error {
+	pb, ok := obj.(proto.Message)
+	if !ok {
+		return fmt.Errorf("%T does not implement proto.Message", obj)
+	}
+
 	body, err := proto.Marshal(pb)
 	if err != nil {
 		return fmt.Errorf("webrpc: encode: %s", err)

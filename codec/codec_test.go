@@ -11,11 +11,15 @@ import (
 
 type InvalidRequest struct{}
 
+func (InvalidRequest) ProtoMessage()  {}
+func (InvalidRequest) Reset()         {}
+func (InvalidRequest) String() string { return "" }
+
 func TestWriteProto(t *testing.T) {
 	tests := []struct {
 		Desc string
-		Out  interface{}
-		In   interface{}
+		Out  proto.Message
+		In   proto.Message
 	}{
 		{
 			Desc: "Test the zero size proto",
