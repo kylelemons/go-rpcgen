@@ -109,5 +109,5 @@
 // Acknowledgements
 //
 // Thanks to the following people:
-//   Bill Broadely <bill@broadley.org> - for beta testing and examples
+//   Bill Broadley <bill@broadley.org> - for beta testing and examples
 package rpcgendoc
