@@ -6,6 +6,7 @@ set -e
 AE_COPY=1
 if [[ "$1" == "--ae-only" ]]; then
   AE_COPY=0
+  shift
 fi
 
 if [[ "$#" -eq 0 ]]; then
@@ -15,7 +16,7 @@ if [[ "$#" -eq 0 ]]; then
   echo "edit each file to be usable on AppEngine by"
   echo "removing references to the goprotobuf library."
   echo
-  echo "Unless --ae-also is specified, the compiled protobuf"
+  echo "Unless --ae-only is specified, the compiled protobuf"
   echo "output file will be duplicated to an appengine"
   echo "specific .ae.go and both will be guarded with the"
   echo "appropriate +build directive."
@@ -42,8 +43,12 @@ for FILE in "$@"; do
   echo "Sanitizing $AE_FILE..."
   {
     echo "H"                    # Display human-readable errors, if any
-    echo "g/goprotobuf/d"       # Delete lines containing goprotobuf
-    echo "g/proto\./d"          # Delete lines calling into the library
+    echo "g/goprotobuf/d"       # Delete goprotobuf import
+    echo "g/var.*Marshal$/d"    # Delete Marshal placeholder
+
+    # Fix lines calling into the library
+    echo "g/proto1/s/proto.*CompactTextString([^)]*)/\"not available on AppEngine\"/"
+
     echo "w"                    # Write
     echo "q"                    # Quit
   } | ed -s "$AE_FILE"
