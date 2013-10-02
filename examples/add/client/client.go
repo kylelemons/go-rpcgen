@@ -1,26 +1,31 @@
+// Copyright 2013 Google. All rights reserved.
+//
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file or at
+// https://developers.google.com/open-source/licenses/bsd
+
 package main
 
 import (
-	"crypto/tls"
 	"crypto/rsa"
+	"crypto/tls"
+	"flag"
 	"fmt"
 	"log"
-	"flag"
 
 	"github.com/kylelemons/go-rpcgen/examples/add/addservice"
 )
 
-var  (
-	certDir = flag.String("certdir","certs","The directory to load the X509 certificates from")
+var (
+	certDir = flag.String("certdir", "certs", "The directory to load the X509 certificates from")
 )
-
 
 func openTLSClient(ipPort string) (*tls.Conn, error) {
 
 	// Note this loads standard x509 certificates, test keys can be
 	// generated with makecert.sh
 
-	log.Printf("Loading certificates from directory: %s\n",*certDir)
+	log.Printf("Loading certificates from directory: %s\n", *certDir)
 	cert, err := tls.LoadX509KeyPair(*certDir+"/server.pem", *certDir+"/server.key")
 	if err != nil {
 		log.Fatalf("server: loadkeys: %s", err)
@@ -36,7 +41,7 @@ func openTLSClient(ipPort string) (*tls.Conn, error) {
 	// we could terminate the connection based on the public key if desired.
 	state := conn.ConnectionState()
 	for _, v := range state.PeerCertificates {
-		log.Printf("Client: Server public key is:\n%x\n",v.PublicKey.(*rsa.PublicKey).N)
+		log.Printf("Client: Server public key is:\n%x\n", v.PublicKey.(*rsa.PublicKey).N)
 
 	}
 	// Lets verify behind the doubt that both ends of the connection

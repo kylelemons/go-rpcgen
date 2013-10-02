@@ -21,16 +21,16 @@ type Empty struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (this *Empty) Reset()         { *this = Empty{} }
-func (*Empty) ProtoMessage()       {}
+func (this *Empty) Reset()   { *this = Empty{} }
+func (*Empty) ProtoMessage() {}
 
 type YouAre struct {
 	IpAddr           *string `protobuf:"bytes,1,req,name=ip_addr" json:"ip_addr,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *YouAre) Reset()         { *this = YouAre{} }
-func (*YouAre) ProtoMessage()       {}
+func (this *YouAre) Reset()   { *this = YouAre{} }
+func (*YouAre) ProtoMessage() {}
 
 func (this *YouAre) GetIpAddr() string {
 	if this != nil && this.IpAddr != nil {

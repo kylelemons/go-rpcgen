@@ -1,3 +1,9 @@
+// Copyright 2013 Google. All rights reserved.
+//
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file or at
+// https://developers.google.com/open-source/licenses/bsd
+
 // The go-rpcgen project is an attempt to create an easy-to-use, open source
 // protobuf service binding for the standard Go RPC package.  It provides a
 // protoc-gen-go (based on the standard "main" from goprotobuf and leveraging

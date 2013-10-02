@@ -1,3 +1,9 @@
+// Copyright 2013 Google. All rights reserved.
+//
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file or at
+// https://developers.google.com/open-source/licenses/bsd
+
 package main
 
 import (
@@ -41,12 +47,12 @@ func handleClient(conn net.Conn) {
 			log.Print("server: conn: Handshake completed")
 		}
 		state := tlscon.ConnectionState()
-		// Note we could reject clients if we don't like their public key.		
+		// Note we could reject clients if we don't like their public key.
 		for _, v := range state.PeerCertificates {
 			log.Printf("Client: Server public key is:\n%x\n", v.PublicKey.(*rsa.PublicKey).N)
 			//			log.Printf("Server: client cert chain %s", v.Subject.ToRDNSequence())
 		}
-		// Now that we have completed SSL/TLS 
+		// Now that we have completed SSL/TLS
 		addservice.ServeAddService(tlscon, Add{})
 	}
 }
