@@ -25,6 +25,7 @@ import (
 type ServerCodec struct {
 	r *bufio.Reader
 	w io.WriteCloser
+	c func(proto.Message)
 }
 
 type ProtoReader interface {
@@ -74,7 +75,14 @@ func WriteProto(w io.Writer, pb proto.Message) error {
 // NewServerCodec returns a ServerCodec that communicates with the ClientCodec
 // on the other end of the given conn.
 func NewServerCodec(conn net.Conn) *ServerCodec {
-	return &ServerCodec{bufio.NewReader(conn), conn}
+	return &ServerCodec{bufio.NewReader(conn), conn, nil}
+}
+
+// NewServerCodecWithCallback returns a ServerCodec that communicates with the
+// ClientCodec on the other end of the given conn,
+// invoking c when a new request body is read.
+func NewServerCodecWithCallback(conn net.Conn, c func(proto.Message)) *ServerCodec {
+	return &ServerCodec{bufio.NewReader(conn), conn, c,}
 }
 
 // ReadRequestHeader reads the header protobuf (which is prefixed by a uvarint
@@ -105,7 +113,13 @@ func (s *ServerCodec) ReadRequestBody(obj interface{}) error {
 		return fmt.Errorf("%T does not implement proto.Message", obj)
 	}
 
-	return ReadProto(s.r, pb)
+	err := ReadProto(s.r, pb)
+
+	if s.c != nil {
+		s.c(pb)
+	}
+
+	return err
 }
 
 // WriteResponse writes the appropriate header protobuf and the given protobuf
