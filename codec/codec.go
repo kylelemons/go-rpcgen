@@ -113,25 +113,30 @@ func (s *ServerCodec) ReadRequestBody(obj interface{}) error {
 // the response was invalid, the size of the body of the resp is reported as
 // having size zero and is not sent.
 func (s *ServerCodec) WriteResponse(resp *rpc.Response, obj interface{}) error {
-	pb, ok := obj.(proto.Message)
-	if !ok {
-		return fmt.Errorf("%T does not implement proto.Message", obj)
-	}
-
 	// Write the header
 	header := wire.Header{
 		Method: &resp.ServiceMethod,
 		Seq:    &resp.Seq,
 	}
+
 	if resp.Error != "" {
 		header.Error = &resp.Error
 	}
+
 	if err := WriteProto(s.w, &header); err != nil {
-		return nil
+		return err
 	}
 
-	// Write the proto
-	return WriteProto(s.w, pb)
+	if resp.Error == "" {
+		pb, ok := obj.(proto.Message)
+		if !ok {
+			return fmt.Errorf("%T does not implement proto.Message", obj)
+		}
+
+		return WriteProto(s.w, pb)
+	}
+
+	return nil
 }
 
 // Close closes the underlying conneciton.
@@ -202,6 +207,10 @@ func (c *ClientCodec) ReadResponseHeader(resp *rpc.Response) error {
 // is zero, nothing is done (this indicates an error condition, which was
 // encapsulated in the header)
 func (c *ClientCodec) ReadResponseBody(obj interface{}) error {
+	if obj == nil {
+		return nil
+	}
+
 	pb, ok := obj.(proto.Message)
 	if !ok {
 		return fmt.Errorf("%T does not implement proto.Message", obj)
