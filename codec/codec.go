@@ -159,7 +159,10 @@ func NewClientCodec(conn net.Conn) *ClientCodec {
 func (c *ClientCodec) WriteRequest(req *rpc.Request, obj interface{}) error {
 	pb, ok := obj.(proto.Message)
 	if !ok {
-		return fmt.Errorf("%T does not implement proto.Message", obj)
+		fmt.Errorf("%T does not implement proto.Message", obj)
+
+		// Empty message.
+		pb = Message{}
 	}
 
 	// Write the header
