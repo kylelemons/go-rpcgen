@@ -9,8 +9,8 @@
 package main
 
 import (
-	"github.com/kylelemons/go-rpcgen/example_ae/whoami"
-	"github.com/kylelemons/go-rpcgen/webrpc"
+	"github.com/bradhe/go-rpcgen/example_ae/whoami"
+	"github.com/bradhe/go-rpcgen/webrpc"
 	"log"
 	"net/url"
 	"os"

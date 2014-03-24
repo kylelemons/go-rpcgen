@@ -10,10 +10,10 @@ import math "math"
 
 import "net"
 import "net/rpc"
-import "github.com/kylelemons/go-rpcgen/codec"
+import "github.com/bradhe/go-rpcgen/codec"
 import "net/url"
 import "net/http"
-import "github.com/kylelemons/go-rpcgen/webrpc"
+import "github.com/bradhe/go-rpcgen/webrpc"
 
 // Reference proto, json, and math imports to suppress error if they are not otherwise used.
 var _ = proto.Marshal

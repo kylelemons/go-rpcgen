@@ -15,7 +15,7 @@ import (
 	"net/rpc"
 
 	"code.google.com/p/goprotobuf/proto"
-	"github.com/kylelemons/go-rpcgen/plugin/wire"
+	"github.com/bradhe/go-rpcgen/plugin/wire"
 )
 
 // ServerCodec implements the rpc.ServerCodec interface for generic protobufs.
