@@ -115,8 +115,10 @@ func (s *ServerCodec) ReadRequestBody(obj interface{}) error {
 func (s *ServerCodec) WriteResponse(resp *rpc.Response, obj interface{}) error {
 	pb, ok := obj.(proto.Message)
 	if !ok {
-		return fmt.Errorf("%T does not implement proto.Message", obj)
+		fmt.Errorf("%T does not implement proto.Message", obj)
 	}
+
+	shouldWriteResponse := ok
 
 	// Write the header
 	header := wire.Header{
@@ -131,7 +133,11 @@ func (s *ServerCodec) WriteResponse(resp *rpc.Response, obj interface{}) error {
 	}
 
 	// Write the proto
-	return WriteProto(s.w, pb)
+	if shouldWriteResponse {
+		return WriteProto(s.w, pb)
+	}
+
+	return nil
 }
 
 // Close closes the underlying conneciton.
@@ -160,10 +166,9 @@ func (c *ClientCodec) WriteRequest(req *rpc.Request, obj interface{}) error {
 	pb, ok := obj.(proto.Message)
 	if !ok {
 		fmt.Errorf("%T does not implement proto.Message", obj)
-
-		// Empty message.
-		pb = Message{}
 	}
+
+	shouldWriteBody := ok
 
 	// Write the header
 	header := wire.Header{
@@ -174,7 +179,12 @@ func (c *ClientCodec) WriteRequest(req *rpc.Request, obj interface{}) error {
 		return err
 	}
 
-	return WriteProto(c.w, pb)
+	if shouldWriteBody {
+		return WriteProto(c.w, pb)
+	}
+
+	// Nothing to see here.
+	return nil
 }
 
 // ReadResponseHeader reads the header protobuf (which is prefixed by a uvarint
