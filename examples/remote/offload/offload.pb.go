@@ -2,10 +2,19 @@
 // source: examples/remote/offload/offload.proto
 // DO NOT EDIT!
 
+/*
+Package offload is a generated protocol buffer package.
+
+It is generated from these files:
+	examples/remote/offload/offload.proto
+
+It has these top-level messages:
+	DataSet
+	ResultSet
+*/
 package offload
 
-import proto "code.google.com/p/goprotobuf/proto"
-import json "encoding/json"
+import proto "github.com/golang/protobuf/proto"
 import math "math"
 
 import "net"
@@ -15,9 +24,8 @@ import "net/url"
 import "net/http"
 import "github.com/bradhe/go-rpcgen/webrpc"
 
-// Reference proto, json, and math imports to suppress error if they are not otherwise used.
+// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type DataSet struct {
@@ -25,13 +33,13 @@ type DataSet struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *DataSet) Reset()         { *this = DataSet{} }
-func (this *DataSet) String() string { return proto.CompactTextString(this) }
-func (*DataSet) ProtoMessage()       {}
+func (m *DataSet) Reset()         { *m = DataSet{} }
+func (m *DataSet) String() string { return proto.CompactTextString(m) }
+func (*DataSet) ProtoMessage()    {}
 
-func (this *DataSet) GetData() string {
-	if this != nil && this.Data != nil {
-		return *this.Data
+func (m *DataSet) GetData() string {
+	if m != nil && m.Data != nil {
+		return *m.Data
 	}
 	return ""
 }
@@ -41,13 +49,13 @@ type ResultSet struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *ResultSet) Reset()         { *this = ResultSet{} }
-func (this *ResultSet) String() string { return proto.CompactTextString(this) }
-func (*ResultSet) ProtoMessage()       {}
+func (m *ResultSet) Reset()         { *m = ResultSet{} }
+func (m *ResultSet) String() string { return proto.CompactTextString(m) }
+func (*ResultSet) ProtoMessage()    {}
 
-func (this *ResultSet) GetResult() string {
-	if this != nil && this.Result != nil {
-		return *this.Result
+func (m *ResultSet) GetResult() string {
+	if m != nil && m.Result != nil {
+		return *m.Result
 	}
 	return ""
 }

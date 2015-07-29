@@ -13,7 +13,7 @@ import (
 	"io"
 	"io/ioutil"
 
-	"code.google.com/p/goprotobuf/proto"
+	"github.com/golang/protobuf/proto"
 )
 
 // ProtoBuf implements the Google Protocol Buffer implementation of the

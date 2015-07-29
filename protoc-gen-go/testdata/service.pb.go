@@ -2,10 +2,19 @@
 // source: protoc-gen-go/testdata/service.proto
 // DO NOT EDIT!
 
+/*
+Package svc is a generated protocol buffer package.
+
+It is generated from these files:
+	protoc-gen-go/testdata/service.proto
+
+It has these top-level messages:
+	Args
+	Return
+*/
 package svc
 
-import proto "code.google.com/p/goprotobuf/proto"
-import json "encoding/json"
+import proto "github.com/golang/protobuf/proto"
 import math "math"
 
 import "net"
@@ -15,9 +24,8 @@ import "net/url"
 import "net/http"
 import "github.com/bradhe/go-rpcgen/webrpc"
 
-// Reference proto, json, and math imports to suppress error if they are not otherwise used.
+// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type Args struct {
@@ -26,20 +34,20 @@ type Args struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *Args) Reset()         { *this = Args{} }
-func (this *Args) String() string { return proto.CompactTextString(this) }
-func (*Args) ProtoMessage()       {}
+func (m *Args) Reset()         { *m = Args{} }
+func (m *Args) String() string { return proto.CompactTextString(m) }
+func (*Args) ProtoMessage()    {}
 
-func (this *Args) GetA() string {
-	if this != nil && this.A != nil {
-		return *this.A
+func (m *Args) GetA() string {
+	if m != nil && m.A != nil {
+		return *m.A
 	}
 	return ""
 }
 
-func (this *Args) GetB() string {
-	if this != nil && this.B != nil {
-		return *this.B
+func (m *Args) GetB() string {
+	if m != nil && m.B != nil {
+		return *m.B
 	}
 	return ""
 }
@@ -49,13 +57,13 @@ type Return struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *Return) Reset()         { *this = Return{} }
-func (this *Return) String() string { return proto.CompactTextString(this) }
-func (*Return) ProtoMessage()       {}
+func (m *Return) Reset()         { *m = Return{} }
+func (m *Return) String() string { return proto.CompactTextString(m) }
+func (*Return) ProtoMessage()    {}
 
-func (this *Return) GetC() string {
-	if this != nil && this.C != nil {
-		return *this.C
+func (m *Return) GetC() string {
+	if m != nil && m.C != nil {
+		return *m.C
 	}
 	return ""
 }

@@ -7,8 +7,8 @@
 package plugin
 
 import (
-	descriptor "code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
-	"code.google.com/p/goprotobuf/protoc-gen-go/generator"
+	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
 // GenerateWebStubs generates the webrpc stubs.

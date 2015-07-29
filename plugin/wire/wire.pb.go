@@ -2,15 +2,22 @@
 // source: plugin/wire/wire.proto
 // DO NOT EDIT!
 
+/*
+Package wire is a generated protocol buffer package.
+
+It is generated from these files:
+	plugin/wire/wire.proto
+
+It has these top-level messages:
+	Header
+*/
 package wire
 
-import proto "code.google.com/p/goprotobuf/proto"
-import json "encoding/json"
+import proto "github.com/golang/protobuf/proto"
 import math "math"
 
-// Reference proto, json, and math imports to suppress error if they are not otherwise used.
+// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type Header struct {
@@ -20,27 +27,27 @@ type Header struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *Header) Reset()         { *this = Header{} }
-func (this *Header) String() string { return proto.CompactTextString(this) }
-func (*Header) ProtoMessage()       {}
+func (m *Header) Reset()         { *m = Header{} }
+func (m *Header) String() string { return proto.CompactTextString(m) }
+func (*Header) ProtoMessage()    {}
 
-func (this *Header) GetMethod() string {
-	if this != nil && this.Method != nil {
-		return *this.Method
+func (m *Header) GetMethod() string {
+	if m != nil && m.Method != nil {
+		return *m.Method
 	}
 	return ""
 }
 
-func (this *Header) GetSeq() uint64 {
-	if this != nil && this.Seq != nil {
-		return *this.Seq
+func (m *Header) GetSeq() uint64 {
+	if m != nil && m.Seq != nil {
+		return *m.Seq
 	}
 	return 0
 }
 
-func (this *Header) GetError() string {
-	if this != nil && this.Error != nil {
-		return *this.Error
+func (m *Header) GetError() string {
+	if m != nil && m.Error != nil {
+		return *m.Error
 	}
 	return ""
 }

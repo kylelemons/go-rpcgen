@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	"code.google.com/p/goprotobuf/protoc-gen-go/generator"
+	"github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
 // Fail to compile if Plugin doesn't implement the generator.Plugin interface

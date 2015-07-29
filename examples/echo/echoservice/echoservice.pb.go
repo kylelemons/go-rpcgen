@@ -2,10 +2,18 @@
 // source: examples/echo/echoservice/echoservice.proto
 // DO NOT EDIT!
 
+/*
+Package echoservice is a generated protocol buffer package.
+
+It is generated from these files:
+	examples/echo/echoservice/echoservice.proto
+
+It has these top-level messages:
+	Payload
+*/
 package echoservice
 
-import proto "code.google.com/p/goprotobuf/proto"
-import json "encoding/json"
+import proto "github.com/golang/protobuf/proto"
 import math "math"
 
 import "net"
@@ -15,9 +23,8 @@ import "net/url"
 import "net/http"
 import "github.com/bradhe/go-rpcgen/webrpc"
 
-// Reference proto, json, and math imports to suppress error if they are not otherwise used.
+// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type Payload struct {
@@ -25,13 +32,13 @@ type Payload struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *Payload) Reset()         { *this = Payload{} }
-func (this *Payload) String() string { return proto.CompactTextString(this) }
-func (*Payload) ProtoMessage()       {}
+func (m *Payload) Reset()         { *m = Payload{} }
+func (m *Payload) String() string { return proto.CompactTextString(m) }
+func (*Payload) ProtoMessage()    {}
 
-func (this *Payload) GetMessage() string {
-	if this != nil && this.Message != nil {
-		return *this.Message
+func (m *Payload) GetMessage() string {
+	if m != nil && m.Message != nil {
+		return *m.Message
 	}
 	return ""
 }

@@ -14,8 +14,8 @@ import (
 	"net"
 	"net/rpc"
 
-	"code.google.com/p/goprotobuf/proto"
 	"github.com/bradhe/go-rpcgen/plugin/wire"
+	"github.com/golang/protobuf/proto"
 )
 
 // ServerCodec implements the rpc.ServerCodec interface for generic protobufs.
@@ -215,6 +215,10 @@ func (c *ClientCodec) ReadResponseHeader(resp *rpc.Response) error {
 // is zero, nothing is done (this indicates an error condition, which was
 // encapsulated in the header)
 func (c *ClientCodec) ReadResponseBody(obj interface{}) error {
+	if obj == nil {
+
+	}
+
 	pb, ok := obj.(proto.Message)
 	if !ok {
 		return fmt.Errorf("%T does not implement proto.Message", obj)

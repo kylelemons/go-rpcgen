@@ -2,10 +2,19 @@
 // source: examples/add/addservice/addservice.proto
 // DO NOT EDIT!
 
+/*
+Package addservice is a generated protocol buffer package.
+
+It is generated from these files:
+	examples/add/addservice/addservice.proto
+
+It has these top-level messages:
+	AddMessage
+	SumMessage
+*/
 package addservice
 
-import proto "code.google.com/p/goprotobuf/proto"
-import json "encoding/json"
+import proto "github.com/golang/protobuf/proto"
 import math "math"
 
 import "net"
@@ -15,9 +24,8 @@ import "net/url"
 import "net/http"
 import "github.com/bradhe/go-rpcgen/webrpc"
 
-// Reference proto, json, and math imports to suppress error if they are not otherwise used.
+// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type AddMessage struct {
@@ -26,20 +34,20 @@ type AddMessage struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (this *AddMessage) Reset()         { *this = AddMessage{} }
-func (this *AddMessage) String() string { return proto.CompactTextString(this) }
-func (*AddMessage) ProtoMessage()       {}
+func (m *AddMessage) Reset()         { *m = AddMessage{} }
+func (m *AddMessage) String() string { return proto.CompactTextString(m) }
+func (*AddMessage) ProtoMessage()    {}
 
-func (this *AddMessage) GetX() int32 {
-	if this != nil && this.X != nil {
-		return *this.X
+func (m *AddMessage) GetX() int32 {
+	if m != nil && m.X != nil {
+		return *m.X
 	}
 	return 0
 }
 
-func (this *AddMessage) GetY() int32 {
-	if this != nil && this.Y != nil {
-		return *this.Y
+func (m *AddMessage) GetY() int32 {
+	if m != nil && m.Y != nil {
+		return *m.Y
 	}
 	return 0
 }
@@ -49,13 +57,13 @@ type SumMessage struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (this *SumMessage) Reset()         { *this = SumMessage{} }
-func (this *SumMessage) String() string { return proto.CompactTextString(this) }
-func (*SumMessage) ProtoMessage()       {}
+func (m *SumMessage) Reset()         { *m = SumMessage{} }
+func (m *SumMessage) String() string { return proto.CompactTextString(m) }
+func (*SumMessage) ProtoMessage()    {}
 
-func (this *SumMessage) GetZ() int32 {
-	if this != nil && this.Z != nil {
-		return *this.Z
+func (m *SumMessage) GetZ() int32 {
+	if m != nil && m.Z != nil {
+		return *m.Z
 	}
 	return 0
 }
