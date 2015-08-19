@@ -84,7 +84,8 @@ func (p *Plugin) GenerateImports(file *generator.FileDescriptor) {
 	if p.rpcImports {
 		p.P(`import "net"`)
 		p.P(`import "net/rpc"`)
-		p.P(`import "github.com/bradhe/go-rpcgen/codec"`)
+		p.P(`import "github.com/bradhe/go-rpcgen/client"`)
+		p.P(`import "errors"`)
 	}
 	if p.webImports {
 		p.P(`import "net/url"`)
