@@ -75,6 +75,7 @@ func (c *Client) create() interface{} {
 
 	// If the connection failed, there's nothin' we can really do about it.
 	if err != nil {
+		logMessage("[go-rpcgen/client] Failed to open connection to %s: %v", c.addr, err)
 		return nil
 	}
 
@@ -87,7 +88,7 @@ func (c *Client) Call(serviceMethod string, args interface{}, reply interface{})
 		return ErrClosed
 	}
 
-	// Signal that something is going on.
+	// Signal that something is goig on.
 	c.wg.Add(1)
 	defer c.wg.Done()
 
