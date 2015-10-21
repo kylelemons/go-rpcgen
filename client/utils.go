@@ -11,5 +11,13 @@ func IsTimeoutError(err error) bool {
 		return false
 	}
 
-	return strings.HasSuffix(err.Error(), "connection timed out")
+	if strings.HasSuffix(err.Error(), "timed out") {
+		return true
+	}
+
+	if strings.HasSuffix(err.Error(), "i/o timeout") {
+		return true
+	}
+
+	return false
 }
