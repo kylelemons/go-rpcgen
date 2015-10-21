@@ -11,15 +11,21 @@ import (
 	"time"
 )
 
+const (
+	DefaultRetryCount = 6
+
+	// Default number of seconds to timeout for all connections
+	DefaultTimeout = 200 * time.Millisecond
+)
+
 var (
 	ErrConnectionFailure   = errors.New("failed to connect")
 	ErrClosed              = errors.New("closed")
 	ErrInvalidPoolObject   = errors.New("invalid pool object")
 	ErrPermanentlyShutdown = errors.New("permenantly shutdown")
-)
 
-const (
-	DefaultRetryCount = 6
+	// Number of seconds to use when timing out.
+	ConnectionTimeout = DefaultTimeout
 )
 
 type Client struct {
@@ -71,15 +77,24 @@ func (c *Client) create() interface{} {
 		return nil
 	}
 
-	conn, err := net.Dial("tcp", c.addr)
+	for {
+		conn, err := net.DialTimeout("tcp", c.addr, ConnectionTimeout)
 
-	// If the connection failed, there's nothin' we can really do about it.
-	if err != nil {
-		logMessage("[go-rpcgen/client] Failed to open connection to %s: %v", c.addr, err)
-		return nil
+		// If the connection failed, there's nothin' we can really do about it.
+		if IsTimeoutError(err) {
+			logMessage("[go-rpcgen/client] Connection to %s timed out. Retrying.", c.addr)
+			continue
+		}
+
+		if err != nil {
+			logMessage("[go-rpcgen/client] Failed to open connection to %s: %v", c.addr, err)
+			return nil
+		}
+
+		return rpc.NewClientWithCodec(codec.NewClientCodec(conn))
 	}
 
-	return rpc.NewClientWithCodec(codec.NewClientCodec(conn))
+	panic("uncreachable")
 }
 
 func (c *Client) Call(serviceMethod string, args interface{}, reply interface{}) error {
