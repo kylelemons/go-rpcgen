@@ -26,13 +26,16 @@ var (
 
 	// Number of seconds to use when timing out.
 	ConnectionTimeout = DefaultTimeout
+
+	// Number of clients to open for this connection pool.
+	PoolSize = 100
 )
 
 type Client struct {
 	wg sync.WaitGroup
 
 	addr     string
-	pool     sync.Pool
+	pool     *ConnectionPool
 	shutdown int32
 }
 
@@ -46,6 +49,8 @@ func backoff(i int) time.Duration {
 }
 
 func (c *Client) Close() {
+	logMessage("[go-rpcgen/client] Closing RPC client.")
+
 	// If someone else called this, we'll just wait a bit for it all to close down.
 	if atomic.LoadInt32(&c.shutdown) > 0 {
 		c.wg.Wait()
@@ -60,41 +65,24 @@ func (c *Client) Close() {
 
 	// Now let's close down all of the connections in the poo in the pool.
 	for {
-		client, ok := c.pool.Get().(*rpc.Client)
-
-		if !ok {
-			// we closed them all
-			break
-		}
-
-		client.Close()
+		c.pool.Close()
 	}
 }
 
-func (c *Client) create() interface{} {
+func (c *Client) create() (*rpc.Client, error) {
 	// If the service is shutdown, let's wait to kill it all.
 	if atomic.LoadInt32(&c.shutdown) > 1 {
-		return nil
+		return nil, nil
 	}
 
-	for {
-		conn, err := net.DialTimeout("tcp", c.addr, ConnectionTimeout)
+	conn, err := net.DialTimeout("tcp", c.addr, ConnectionTimeout)
 
-		// If the connection failed, there's nothin' we can really do about it.
-		if IsTimeoutError(err) {
-			logMessage("[go-rpcgen/client] Connection to %s timed out. Retrying.", c.addr)
-			continue
-		}
-
-		if err != nil {
-			logMessage("[go-rpcgen/client] Failed to open connection to %s: %v", c.addr, err)
-			return nil
-		}
-
-		return rpc.NewClientWithCodec(codec.NewClientCodec(conn))
+	if err != nil {
+		return nil, err
 	}
 
-	panic("uncreachable")
+	co := rpc.NewClientWithCodec(codec.NewClientCodec(conn))
+	return co, nil
 }
 
 func (c *Client) Call(serviceMethod string, args interface{}, reply interface{}) error {
@@ -111,11 +99,7 @@ func (c *Client) Call(serviceMethod string, args interface{}, reply interface{})
 	var retry int
 
 	for {
-		client, ok := c.pool.Get().(*rpc.Client)
-
-		if !ok {
-			return ErrInvalidPoolObject
-		}
+		client := c.pool.Get()
 
 		if client == nil {
 			return ErrConnectionFailure
@@ -131,6 +115,8 @@ func (c *Client) Call(serviceMethod string, args interface{}, reply interface{})
 
 		// If we got here, let's see what type of error it is.
 		if err == rpc.ErrShutdown {
+			client.Close()
+
 			retry += 1
 
 			if retry > DefaultRetryCount {
@@ -140,6 +126,8 @@ func (c *Client) Call(serviceMethod string, args interface{}, reply interface{})
 			// Let's try again!
 			time.Sleep(backoff(retry))
 		} else {
+			client.Close()
+
 			// This means err != nil, so we just report the error.
 			return err
 		}
@@ -176,6 +164,7 @@ func (c *Client) Go(serviceMethod string, args interface{}, reply interface{}, d
 func NewClient(addr string) *Client {
 	c := new(Client)
 	c.addr = addr
+	c.pool = NewConnectionPool(PoolSize)
 	c.pool.New = c.create
 	return c
 }
