@@ -40,19 +40,19 @@ func TestGenerateRPCStubs(t *testing.T) {
 			Output: `
 // internal wrapper for type-safe RPC calling
 type rpcMathClient struct {
-	*rpc.Client
+	*client.Client
 }
-func (this rpcMathClient) Sqrt(in *SqrtInput, out *SqrtOutput) error {
-	return this.Call("Math.Sqrt", in, out)
+func (c rpcMathClient) Sqrt(in *SqrtInput, out *SqrtOutput) error {
+	return c.Call("Math.Sqrt", in, out)
 }
-func (this rpcMathClient) Add(in *AddInput, out *AddOutput) error {
-	return this.Call("Math.Add", in, out)
+func (c rpcMathClient) Add(in *AddInput, out *AddOutput) error {
+	return c.Call("Math.Add", in, out)
 }
 
 // NewMathClient returns an *rpc.Client wrapper for calling the methods of
 // Math remotely.
-func NewMathClient(conn net.Conn) Math {
-	return rpcMathClient{rpc.NewClientWithCodec(codec.NewClientCodec(conn))}
+func NewMathClient(addr string) Math {
+	return rpcMathClient{client.NewClient(addr)}
 }
 
 // ServeMath serves the given Math backend implementation on conn.
@@ -63,15 +63,6 @@ func ServeMath(conn net.Conn, backend Math) error {
 	}
 	srv.ServeCodec(codec.NewServerCodec(conn))
 	return nil
-}
-
-// DialMath returns a Math for calling the Math servince at addr (TCP).
-func DialMath(addr string) (Math, error) {
-	conn, err := net.Dial("tcp", addr)
-	if err != nil {
-		return nil, err
-	}
-	return NewMathClient(conn), nil
 }
 
 // ListenAndServeMath serves the given Math backend implementation
