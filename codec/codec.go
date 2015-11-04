@@ -113,21 +113,22 @@ func (s *ServerCodec) ReadRequestBody(obj interface{}) error {
 // the response was invalid, the size of the body of the resp is reported as
 // having size zero and is not sent.
 func (s *ServerCodec) WriteResponse(resp *rpc.Response, obj interface{}) error {
-	pb, ok := obj.(proto.Message)
-	if !ok {
-		fmt.Errorf("%T does not implement proto.Message", obj)
-	}
-
-	shouldWriteResponse := ok
+	// If we can't actually do the cast it means that (most likely) obj is nil,
+	// indicating that we don't actually have a response to send back (e.g. it's
+	// a "void" method call). This is OK because the metadata about the response
+	// object will indicate that everything is A-OK.
+	pb, shouldWriteResponse := obj.(proto.Message)
 
 	// Write the header
 	header := wire.Header{
 		Method: &resp.ServiceMethod,
 		Seq:    &resp.Seq,
 	}
+
 	if resp.Error != "" {
 		header.Error = &resp.Error
 	}
+
 	if err := WriteProto(s.w, &header); err != nil {
 		return nil
 	}
@@ -163,27 +164,22 @@ func NewClientCodec(conn net.Conn) *ClientCodec {
 // WriteRequest writes the appropriate header protobuf and the given protobuf
 // to the connection (each prefixed with a uvarint indicating its size).
 func (c *ClientCodec) WriteRequest(req *rpc.Request, obj interface{}) error {
-	pb, ok := obj.(proto.Message)
-	if !ok {
-		fmt.Errorf("%T does not implement proto.Message", obj)
-	}
-
-	shouldWriteBody := ok
+	pb, hasMessage := obj.(proto.Message)
 
 	// Write the header
 	header := wire.Header{
 		Method: &req.ServiceMethod,
 		Seq:    &req.Seq,
 	}
+
 	if err := WriteProto(c.w, &header); err != nil {
 		return err
 	}
 
-	if shouldWriteBody {
+	if hasMessage {
 		return WriteProto(c.w, pb)
 	}
 
-	// Nothing to see here.
 	return nil
 }
 
@@ -215,11 +211,8 @@ func (c *ClientCodec) ReadResponseHeader(resp *rpc.Response) error {
 // is zero, nothing is done (this indicates an error condition, which was
 // encapsulated in the header)
 func (c *ClientCodec) ReadResponseBody(obj interface{}) error {
-	if obj == nil {
-
-	}
-
 	pb, ok := obj.(proto.Message)
+
 	if !ok {
 		return fmt.Errorf("%T does not implement proto.Message", obj)
 	}
