@@ -39,11 +39,13 @@ func ReadProto(r ProtoReader, pb proto.Message) error {
 	if err != nil {
 		return err
 	}
+
 	// TODO max size?
 	buf := make([]byte, size)
 	if _, err := io.ReadFull(r, buf); err != nil {
 		return err
 	}
+
 	return proto.Unmarshal(buf, pb)
 }
 
@@ -57,15 +59,18 @@ func WriteProto(w io.Writer, pb proto.Message) error {
 	// Marshal the protobuf
 	data, err := proto.Marshal(pb)
 	if err != nil {
+		logMessage("[go-rpcgen/codec] Marshal failed. %v", err)
 		return err
 	}
 
 	// Write the size and data
 	n := binary.PutUvarint(size[:], uint64(len(data)))
 	if _, err = w.Write(size[:n]); err != nil {
+		logMessage("[go-rpcgen/codec] Writing message length failed. %v", err)
 		return err
 	}
 	if _, err = w.Write(data); err != nil {
+		logMessage("[go-rpcgen/codec] Writing message data failed. %v", err)
 		return err
 	}
 	return nil
