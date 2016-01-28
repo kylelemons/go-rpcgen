@@ -11,9 +11,9 @@ import (
 	"strings"
 	"testing"
 
-	"code.google.com/p/goprotobuf/proto"
-	descriptor "code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
-	"code.google.com/p/goprotobuf/protoc-gen-go/generator"
+	"github.com/golang/protobuf/proto"
+	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
 func TestGenerateWebStubs(t *testing.T) {

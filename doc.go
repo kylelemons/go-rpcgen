@@ -20,7 +20,7 @@
 // Installation
 //
 // To install, run the following command:
-//   go get -v -u github.com/kylelemons/go-rpcgen/protoc-gen-go
+//   go get -v -u github.com/bradhe/go-rpcgen/protoc-gen-go
 //
 // Usage
 //

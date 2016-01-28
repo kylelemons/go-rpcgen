@@ -14,8 +14,8 @@ import (
 	"net"
 	"net/rpc"
 
-	"code.google.com/p/goprotobuf/proto"
-	"github.com/kylelemons/go-rpcgen/plugin/wire"
+	"github.com/bradhe/go-rpcgen/plugin/wire"
+	"github.com/golang/protobuf/proto"
 )
 
 // ServerCodec implements the rpc.ServerCodec interface for generic protobufs.
@@ -39,11 +39,13 @@ func ReadProto(r ProtoReader, pb proto.Message) error {
 	if err != nil {
 		return err
 	}
+
 	// TODO max size?
 	buf := make([]byte, size)
 	if _, err := io.ReadFull(r, buf); err != nil {
 		return err
 	}
+
 	return proto.Unmarshal(buf, pb)
 }
 
@@ -57,15 +59,18 @@ func WriteProto(w io.Writer, pb proto.Message) error {
 	// Marshal the protobuf
 	data, err := proto.Marshal(pb)
 	if err != nil {
+		logMessage("[go-rpcgen/codec] Marshal failed. %v", err)
 		return err
 	}
 
 	// Write the size and data
 	n := binary.PutUvarint(size[:], uint64(len(data)))
 	if _, err = w.Write(size[:n]); err != nil {
+		logMessage("[go-rpcgen/codec] Writing message length failed. %v", err)
 		return err
 	}
 	if _, err = w.Write(data); err != nil {
+		logMessage("[go-rpcgen/codec] Writing message data failed. %v", err)
 		return err
 	}
 	return nil
@@ -113,25 +118,32 @@ func (s *ServerCodec) ReadRequestBody(obj interface{}) error {
 // the response was invalid, the size of the body of the resp is reported as
 // having size zero and is not sent.
 func (s *ServerCodec) WriteResponse(resp *rpc.Response, obj interface{}) error {
-	pb, ok := obj.(proto.Message)
-	if !ok {
-		return fmt.Errorf("%T does not implement proto.Message", obj)
-	}
+	// If we can't actually do the cast it means that (most likely) obj is nil,
+	// indicating that we don't actually have a response to send back (e.g. it's
+	// a "void" method call). This is OK because the metadata about the response
+	// object will indicate that everything is A-OK.
+	pb, shouldWriteResponse := obj.(proto.Message)
 
 	// Write the header
 	header := wire.Header{
 		Method: &resp.ServiceMethod,
 		Seq:    &resp.Seq,
 	}
+
 	if resp.Error != "" {
 		header.Error = &resp.Error
 	}
+
 	if err := WriteProto(s.w, &header); err != nil {
 		return nil
 	}
 
 	// Write the proto
-	return WriteProto(s.w, pb)
+	if shouldWriteResponse {
+		return WriteProto(s.w, pb)
+	}
+
+	return nil
 }
 
 // Close closes the underlying conneciton.
@@ -157,21 +169,23 @@ func NewClientCodec(conn net.Conn) *ClientCodec {
 // WriteRequest writes the appropriate header protobuf and the given protobuf
 // to the connection (each prefixed with a uvarint indicating its size).
 func (c *ClientCodec) WriteRequest(req *rpc.Request, obj interface{}) error {
-	pb, ok := obj.(proto.Message)
-	if !ok {
-		return fmt.Errorf("%T does not implement proto.Message", obj)
-	}
+	pb, hasMessage := obj.(proto.Message)
 
 	// Write the header
 	header := wire.Header{
 		Method: &req.ServiceMethod,
 		Seq:    &req.Seq,
 	}
+
 	if err := WriteProto(c.w, &header); err != nil {
 		return err
 	}
 
-	return WriteProto(c.w, pb)
+	if hasMessage {
+		return WriteProto(c.w, pb)
+	}
+
+	return nil
 }
 
 // ReadResponseHeader reads the header protobuf (which is prefixed by a uvarint
@@ -203,6 +217,7 @@ func (c *ClientCodec) ReadResponseHeader(resp *rpc.Response) error {
 // encapsulated in the header)
 func (c *ClientCodec) ReadResponseBody(obj interface{}) error {
 	pb, ok := obj.(proto.Message)
+
 	if !ok {
 		return fmt.Errorf("%T does not implement proto.Message", obj)
 	}

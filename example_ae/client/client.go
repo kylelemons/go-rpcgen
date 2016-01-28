@@ -1,3 +1,4 @@
+//go:generate protoc --proto_path=../whoami --go_out=plugins=go-rpcgen:../whoami ../whoami/whoami.proto
 // Copyright 2013 Google. All rights reserved.
 //
 // Use of this source code is governed by a BSD-style
@@ -9,8 +10,8 @@
 package main
 
 import (
-	"github.com/kylelemons/go-rpcgen/example_ae/whoami"
-	"github.com/kylelemons/go-rpcgen/webrpc"
+	"github.com/bradhe/go-rpcgen/example_ae/whoami"
+	"github.com/bradhe/go-rpcgen/webrpc"
 	"log"
 	"net/url"
 	"os"

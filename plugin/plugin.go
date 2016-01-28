@@ -8,14 +8,14 @@
 // RPC stubs for use with the the net/rpc package.
 //
 // To register the plugin, import this package as follows:
-//   import _ "github.com/kylelemons/go-rpcgen/plugin"
+//   import _ "github.com/bradhe/go-rpcgen/plugin"
 package plugin
 
 import (
 	"os"
 	"strings"
 
-	"code.google.com/p/goprotobuf/protoc-gen-go/generator"
+	"github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
 // Fail to compile if Plugin doesn't implement the generator.Plugin interface
@@ -84,12 +84,13 @@ func (p *Plugin) GenerateImports(file *generator.FileDescriptor) {
 	if p.rpcImports {
 		p.P(`import "net"`)
 		p.P(`import "net/rpc"`)
-		p.P(`import "github.com/kylelemons/go-rpcgen/codec"`)
+		p.P(`import "github.com/bradhe/go-rpcgen/codec"`)
+		p.P(`import "github.com/bradhe/go-rpcgen/client"`)
 	}
 	if p.webImports {
 		p.P(`import "net/url"`)
 		p.P(`import "net/http"`)
-		p.P(`import "github.com/kylelemons/go-rpcgen/webrpc"`)
+		p.P(`import "github.com/bradhe/go-rpcgen/webrpc"`)
 	}
 }
 
